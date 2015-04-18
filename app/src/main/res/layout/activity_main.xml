@@ -11,9 +11,7 @@
         android:text="@string/dosen"
         android:id="@+id/dosen_button"
         android:layout_marginTop="50dp"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:onClick="openDosen"/>
+        android:layout_centerHorizontal="true"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -22,7 +20,6 @@
         android:id="@+id/mhs_button"
         android:layout_below="@+id/dosen_button"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="67dp"
-        android:onClick="openMhs"/>
+        android:layout_marginTop="67dp"/>
 
 </RelativeLayout>
