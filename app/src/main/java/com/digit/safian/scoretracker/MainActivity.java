@@ -8,32 +8,51 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
+import java.util.Date;
 
 
 public class MainActivity extends ActionBarActivity {
 
-    @Override
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Button dosen_button = (Button) findViewById(R.id.dosen_button);
-        dosen_button.setOnClickListener(new View.OnClickListener() {
+        final Button login_button = (Button) findViewById(R.id.login_button);
+        login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, DosenActivity.class);
-                startActivity(intent);
+                TextView usernameTextView = (TextView) findViewById(R.id.username);
+                TextView passwordTextView = (TextView) findViewById(R.id.password);
+                final String username = usernameTextView.getText().toString();
+                final String password = passwordTextView.getText().toString();
+                Date now = new Date();
+                try {
+                    //Integer yearIn = Integer.parseInt(username.substring(6,8));
+                    //Integer yearNow = Integer.parseInt(new SimpleDateFormat("yy").format(now));
+                    //Integer smtNow = yearNow-yearIn;
+                    //Log.v(LOG_TAG, "semester sekarang: "+smtNow);
+                    //if(smtNow > 0){
+                        String result = check(username, password);
+                        if(result == "dosen"){
+                            Intent intent = new Intent(MainActivity.this, DosenActivity.class);
+                            startActivity(intent);
+                        }else if(result == "mhs"){
+                            Intent intent = new Intent(MainActivity.this, MhsActivity.class);
+                            startActivity(intent);
+
+                        //}
+                    }
+                } catch(NumberFormatException nfe) {
+                    System.out.println("Could not parse " + nfe);
+                }
+
             }
         });
 
-        final Button mhs_button = (Button) findViewById(R.id.mhs_button);
-        mhs_button.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(MainActivity.this, MhsActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
 
@@ -61,5 +80,13 @@ public class MainActivity extends ActionBarActivity {
 
     public static class PlaceholderFragment extends Fragment{
         public PlaceholderFragment(){}
+    }
+
+    private String check(String username, String password){
+        if(username.contains("240103")){
+            return "mhs";
+        }else{
+            return "dosen";
+        }
     }
 }
