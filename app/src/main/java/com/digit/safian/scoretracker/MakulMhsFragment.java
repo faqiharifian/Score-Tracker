@@ -24,8 +24,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class MakulMhsFragment extends Fragment {
 
@@ -63,11 +61,11 @@ public class MakulMhsFragment extends Fragment {
         makulTask.execute();
     }
 
-    /*@Override
+    @Override
     public void onStart(){
         super.onStart();
         updateMakulMhs();
-    }*/
+    }
 
 
     public class FetchMakulMhsTask extends AsyncTask<Void, Void, String[]> {
@@ -194,7 +192,25 @@ public class MakulMhsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_mhs, container, false);
-        String[] makulArray = {
+        mMakulAdapter =
+                new ArrayAdapter<String>(
+                        getActivity(),
+                        R.layout.list_item_makul,
+                        R.id.list_item_makul_textview,
+                        new ArrayList<String>()
+                );
+
+        ListView listView = (ListView) rootView.findViewById(R.id.listview_makul_mhs);
+        listView.setAdapter(mMakulAdapter);
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String forecast = mMakulAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT, forecast);
+                startActivity(intent);
+            }
+        });*/
+        /*String[] makulArray = {
                 "Proyek Perangkat Lunak",
                 "Analisis dan Perancangan Sistem Informasi",
                 "Keamanan Jaringan",
@@ -215,7 +231,7 @@ public class MakulMhsFragment extends Fragment {
                 daftarMakul
         );
         ListView listView = (ListView) rootView.findViewById(R.id.listview_makul_mhs);
-        listView.setAdapter(mMakulAdapter);
+        listView.setAdapter(mMakulAdapter);*/
         return rootView;
     }
 }
