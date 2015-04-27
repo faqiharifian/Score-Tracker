@@ -53,6 +53,7 @@ public class ScoreContract {
 
         public static final String TABLE_NAME = "mata_kuliah";
 
+        public static final String COLUMN_ID_MAKUL = "id_makul";
         public static final String COLUMN_NAMA_MAKUL = "nama";
 
         public static Uri buildMakulUri(long id) {

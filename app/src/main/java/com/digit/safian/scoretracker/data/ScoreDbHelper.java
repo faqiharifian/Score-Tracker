@@ -49,7 +49,9 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
                 MakulEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
                 // the ID of the location entry associated with this weather data
-                MakulEntry.COLUMN_NAMA_MAKUL + " TEXT NOT NULL); ";
+                MakulEntry.COLUMN_ID_MAKUL + " TEXT NOT NULL," +
+                MakulEntry.COLUMN_NAMA_MAKUL + " TEXT NOT NULL, "+
+                " UNIQUE (" + MakulEntry.COLUMN_ID_MAKUL + ") ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_NILAI_TABLE = "CREATE TABLE " + NilaiEntry.TABLE_NAME + " (" +
                 // Why AutoIncrement here, and not above?
@@ -68,8 +70,10 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
                 // Set up the location column as a foreign key to location table.
                 " FOREIGN KEY (" + NilaiEntry.COLUMN_ID_MAKUL + ") REFERENCES " +
-                MakulEntry.TABLE_NAME + " (" + MakulEntry._ID + ")" +
-                ");";
+                MakulEntry.TABLE_NAME + " (" + MakulEntry.COLUMN_ID_MAKUL + ")" +
+                " UNIQUE (" + NilaiEntry.COLUMN_ID_MAKUL + ", " +
+                NilaiEntry.COLUMN_MAHASISWA + ", " +
+                NilaiEntry.COLUMN_JUDUL + ") ON CONFLICT REPLACE);";
 
         sqLiteDatabase.execSQL(SQL_CREATE_MAKUL_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_NILAI_TABLE);

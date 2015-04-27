@@ -88,34 +88,35 @@ public class MakulMhsFragment extends Fragment {
         private void getMakulDataFromJson(String makulJsonStr)
                 throws JSONException {
             // These are the names of the JSON objects that need to be extracted.
-            final String OWM_RESPONSEDATA = "responseData";
             final String OWM_FEED = "feed";
-            final String OWM_ENTRIES = "entries";
-            final String OWM_CONTENT = "content";
+            final String OWM_ENTRIES = "entry";
+            final String OWM_ID = "gsx$id";
+            final String OWM_NAME = "gsx$name";
+            final String OWM_CONTENT = "$t";
 
             JSONObject makulJson = new JSONObject(makulJsonStr);
-            JSONObject jsonResponse = makulJson.getJSONObject(OWM_RESPONSEDATA);
-            JSONObject responseFeed = jsonResponse.getJSONObject(OWM_FEED);
+            JSONObject responseFeed = makulJson.getJSONObject(OWM_FEED);
             JSONArray makulArray = responseFeed.getJSONArray(OWM_ENTRIES);
 
             Vector<ContentValues> cVVector = new Vector<ContentValues>(makulArray.length());
             String[] resultStrs = new String[makulArray.length()];
             for(int i = 0; i < makulArray.length(); i++) {
-                String content;
+                String id_makul;
+                String name;
 
                 // Get the JSON object representing the day
                 JSONObject iMakul = makulArray.getJSONObject(i);
-                content = iMakul.getString(OWM_CONTENT);
-
-
-                resultStrs[i] = formatName(content);
+                JSONObject idMakul = iMakul.getJSONObject(OWM_ID);
+                JSONObject nameMakul = iMakul.getJSONObject(OWM_NAME);
+                id_makul = idMakul.getString(OWM_CONTENT);
+                name = nameMakul.getString(OWM_CONTENT);
 
                 ContentValues makulValues = new ContentValues();
-
-                makulValues.put(ScoreContract.MakulEntry.COLUMN_NAMA_MAKUL, resultStrs[i]);
+                makulValues.put(ScoreContract.MakulEntry.COLUMN_ID_MAKUL, id_makul);
+                makulValues.put(ScoreContract.MakulEntry.COLUMN_NAMA_MAKUL, name);
 
                 cVVector.add(makulValues);
-
+                Log.v(LOG_TAG, String.valueOf(makulValues));
             }
             if (cVVector.size() > 0) {
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
@@ -145,7 +146,7 @@ public class MakulMhsFragment extends Fragment {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL("http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=100&q=https://spreadsheets.google.com/feeds/list/1H9Y7zJJ8oUCfoZ9qC07TcnujunnU7OxL0yr9OMEPE64/6/public/basic");
+                URL url = new URL("https://spreadsheets.google.com/feeds/list/1H9Y7zJJ8oUCfoZ9qC07TcnujunnU7OxL0yr9OMEPE64/6/public/values?alt=json");
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -174,7 +175,7 @@ public class MakulMhsFragment extends Fragment {
                     return null;
                 }
                 makulJsonStr = buffer.toString();
-
+                //Log.v(LOG_TAG, makulJsonStr);
 
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);

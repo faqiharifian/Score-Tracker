@@ -84,6 +84,12 @@ public class ScoreProvider extends ContentProvider {
         );
     }
 
+   /* private Boolean isIdExist(Cursor cursor, String id){
+        Integer length = cursor.getCount();
+        while(!cursor.isLast()){
+            cursor.getString(0);
+        }
+    }*/
 
     /*
         Students: Here is where you need to create the UriMatcher. This UriMatcher will
@@ -217,9 +223,26 @@ public class ScoreProvider extends ContentProvider {
     @Override
     public int update(
             Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        // Student: This is a lot like the delete function.  We return the number of rows impacted
-        // by the update.
-        return 0;
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        int rowsUpdated;
+
+        switch (match) {
+            case MAKUL:
+                rowsUpdated = db.update(ScoreContract.MakulEntry.TABLE_NAME, values, selection,
+                        selectionArgs);
+                break;
+            case NILAI:
+                rowsUpdated = db.update(ScoreContract.NilaiEntry.TABLE_NAME, values, selection,
+                        selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
     }
 
     @Override
