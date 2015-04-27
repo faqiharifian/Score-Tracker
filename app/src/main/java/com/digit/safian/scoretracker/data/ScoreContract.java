@@ -26,7 +26,7 @@ import android.text.format.Time;
  */
 public class ScoreContract {
 
-    public static final String CONTENT_AUTHORITY = "com.example.android.sunshine.app";
+    public static final String CONTENT_AUTHORITY = "com.digit.safian.scoretracker";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_MAKUL = "makul";
     public static final String PATH_NILAI = "nilai";
@@ -86,7 +86,11 @@ public class ScoreContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static String getIdFromUri(Uri uri) {
+        public static Uri buildNilaiMakulUri(String makulId){
+            return CONTENT_URI.buildUpon().appendPath(makulId).build();
+        }
+
+        public static String getMakulIdFromUri(Uri uri){
             return uri.getPathSegments().get(1);
         }
 

@@ -26,6 +26,11 @@
             android:name=".MhsActivity"
             android:label="@string/title_activity_mhs" >
         </activity>
+        <provider
+            android:authorities="com.digit.safian.scoretracker"
+            android:name=".data.ScoreProvider"
+            android:exported="false"
+            android:syncable="true" />
     </application>
 
 </manifest>

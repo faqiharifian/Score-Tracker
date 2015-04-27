@@ -68,7 +68,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
                 // Set up the location column as a foreign key to location table.
                 " FOREIGN KEY (" + NilaiEntry.COLUMN_ID_MAKUL + ") REFERENCES " +
-                MakulEntry.TABLE_NAME + " (" + MakulEntry._ID + "), " +
+                MakulEntry.TABLE_NAME + " (" + MakulEntry._ID + ")" +
                 ");";
 
         sqLiteDatabase.execSQL(SQL_CREATE_MAKUL_TABLE);

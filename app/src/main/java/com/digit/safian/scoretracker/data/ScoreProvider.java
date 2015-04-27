@@ -31,7 +31,7 @@ public class ScoreProvider extends ContentProvider {
     private ScoreDbHelper mOpenHelper;
 
     static final int MAKUL = 100;
-    static final int NILAI_BY_MAKUL = 101;
+    static final int NILAI_BY_MAKUL = 202;
     static final int NILAI = 200;
 
     private static final SQLiteQueryBuilder sNilaiByMakulSettingQueryBuilder;
@@ -40,6 +40,7 @@ public class ScoreProvider extends ContentProvider {
         sNilaiByMakulSettingQueryBuilder = new SQLiteQueryBuilder();
         
         //This is an inner join which looks like
+        //nilai INNER JOIN makul ON nilai.id_makul = makul._id
         //weather INNER JOIN location ON weather.location_id = location._id
         sNilaiByMakulSettingQueryBuilder.setTables(
                 ScoreContract.NilaiEntry.TABLE_NAME + " INNER JOIN " +
@@ -61,9 +62,6 @@ public class ScoreProvider extends ContentProvider {
 
 
     private Cursor getMakul(Uri uri, String[] projection, String sortOrder){
-        String[] selectionArgs;
-        String selection;
-
         return sNilaiByMakulSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
                 sMakul,
@@ -98,6 +96,8 @@ public class ScoreProvider extends ContentProvider {
         final String authority = ScoreContract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, ScoreContract.PATH_MAKUL, MAKUL);
+
+        matcher.addURI(authority, ScoreContract.PATH_NILAI, NILAI);
         matcher.addURI(authority, ScoreContract.PATH_NILAI + "/*", NILAI_BY_MAKUL);
         return matcher;
     }
