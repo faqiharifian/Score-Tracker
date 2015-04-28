@@ -23,9 +23,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.util.Log;
 
 public class ScoreProvider extends ContentProvider {
-
+    private final String LOG_TAG = ScoreProvider.class.getSimpleName();
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private ScoreDbHelper mOpenHelper;
@@ -84,12 +85,17 @@ public class ScoreProvider extends ContentProvider {
         );
     }
 
-   /* private Boolean isIdExist(Cursor cursor, String id){
-        Integer length = cursor.getCount();
-        while(!cursor.isLast()){
-            cursor.getString(0);
+    private Boolean isIdExist(Integer table, String id){
+        final SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+        if(MAKUL == table){
+            final String selection = ScoreContract.MakulEntry.TABLE_NAME + "." + ScoreContract.MakulEntry.COLUMN_ID_MAKUL + " = ?";
+            Cursor cursor = db.query(ScoreContract.MakulEntry.TABLE_NAME, new String[]{"id_makul"}, selection, new String[]{id}, null, null, null);
+            if(cursor.getCount() == 0){
+                return false;
+            }
         }
-    }*/
+        return true;
+    }
 
     /*
         Students: Here is where you need to create the UriMatcher. This UriMatcher will
@@ -137,6 +143,8 @@ public class ScoreProvider extends ContentProvider {
                 return ScoreContract.MakulEntry.CONTENT_TYPE;
             case NILAI_BY_MAKUL:
                 return ScoreContract.NilaiEntry.CONTENT_TYPE;
+            case NILAI:
+                return ScoreContract.NilaiEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -160,7 +168,9 @@ public class ScoreProvider extends ContentProvider {
                 retCursor = getNilaiByMakul(uri, projection, sortOrder);
                 break;
             }
-
+            case NILAI:{
+                retCursor = null;
+            }
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -199,23 +209,36 @@ public class ScoreProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
+        db.close();
         return returnUri;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         // Student: Start by getting a writable database
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        int rowsDeleted;
+        // this makes delete all rows return the number of rows deleted
+        if ( null == selection ) selection = "1";
+        switch (match) {
+            case MAKUL:
+                rowsDeleted = db.delete(
+                        ScoreContract.MakulEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case NILAI:
+                rowsDeleted = db.delete(
+                        ScoreContract.NilaiEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        // Because a null deletes all rows
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsDeleted;
 
-        // Student: Use the uriMatcher to match the WEATHER and LOCATION URI's we are going to
-        // handle.  If it doesn't match these, throw an UnsupportedOperationException.
-
-        // Student: A null value deletes all rows.  In my implementation of this, I only notified
-        // the uri listeners (using the content resolver) if the rowsDeleted != 0 or the selection
-        // is null.
-        // Oh, and you should notify the listeners here.
-
-        // Student: return the actual rows deleted
-        return 0;
     }
 
 
@@ -248,20 +271,61 @@ public class ScoreProvider extends ContentProvider {
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        //Log.v(LOG_TAG, String.valueOf(existing.moveToFirst()));
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case MAKUL: {
                 db.beginTransaction();
                 int returnCount = 0;
+                Cursor existingCursor = db.query(
+                        ScoreContract.MakulEntry.TABLE_NAME,
+                        new String[] {ScoreContract.MakulEntry._ID, ScoreContract.MakulEntry.COLUMN_ID_MAKUL},
+                        null, null, null, null, null
+                );
                 try {
+
                     for (ContentValues value : values) {
-                        long _id = db.insert(ScoreContract.MakulEntry.TABLE_NAME, null, value);
+                        long makulId = -1;
+                        long _id = -1;
+                        if(existingCursor != null){
+                            Log.v(LOG_TAG, "existing");
+                            existingCursor.moveToFirst();
+                            while(existingCursor.isAfterLast() == false){
+                                String cursor_idMakul = existingCursor.getString(existingCursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_ID_MAKUL));
+                                String value_idMakul = value.getAsString(ScoreContract.MakulEntry.COLUMN_ID_MAKUL);
+                                Log.v(LOG_TAG, "checking");
+                                Log.v(LOG_TAG, "cursor.id_makul: "+cursor_idMakul);
+                                Log.v(LOG_TAG, "value.id_makul: "+value_idMakul);
+                                Log.v(LOG_TAG, "comparing: "+(cursor_idMakul.equals(value_idMakul)));
+                                if(cursor_idMakul.equals(value_idMakul)){
+                                    makulId = existingCursor.getLong(existingCursor.getColumnIndex(ScoreContract.MakulEntry._ID));
+                                    Log.v(LOG_TAG, "exist");
+                                    break;
+                                }
+                                existingCursor.moveToNext();
+                            }
+                            Log.v(LOG_TAG, "makulId: "+makulId);
+                            if(makulId != -1) {
+                                _id = db.update(
+                                        ScoreContract.MakulEntry.TABLE_NAME,
+                                        value,
+                                        ScoreContract.MakulEntry._ID + " = ?",
+                                        new String[]{String.valueOf(makulId)});
+                                Log.v(LOG_TAG, "updated");
+                            }
+                        }
+                        if(makulId == -1){
+                            _id = db.insert(ScoreContract.MakulEntry.TABLE_NAME, null, value);
+                            Log.v(LOG_TAG, "inserted");
+                        }
                         if (_id != -1) {
                             returnCount++;
                         }
+
                     }
                     db.setTransactionSuccessful();
                 } finally {
+                    existingCursor.close();
                     db.endTransaction();
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
