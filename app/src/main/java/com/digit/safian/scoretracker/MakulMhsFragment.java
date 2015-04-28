@@ -82,9 +82,10 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l){
-                String makul = (String) mMakulAdapter.getItem(position);
+                /*String makul = (String) mMakulAdapter.getItem(position);
                 Intent intent = new Intent(getActivity(), NilaiMhsActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, makul);
+                        .putExtra(Intent.EXTRA_TEXT, makul);*/
+                Intent intent = new Intent(getActivity(), NilaiMhsActivity.class);
                 startActivity(intent);
             }
         });
