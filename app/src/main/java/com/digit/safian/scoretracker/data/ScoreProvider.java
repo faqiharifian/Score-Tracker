@@ -63,9 +63,10 @@ public class ScoreProvider extends ContentProvider {
 
 
     private Cursor getMakul(Uri uri, String[] projection, String sortOrder){
-        return sNilaiByMakulSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+        return mOpenHelper.getReadableDatabase().query(
+                ScoreContract.MakulEntry.TABLE_NAME,
                 projection,
-                sMakul,
+                null,
                 null,
                 null,
                 null,

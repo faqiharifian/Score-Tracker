@@ -1,10 +1,7 @@
 package com.digit.safian.scoretracker;
 
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -154,40 +151,6 @@ public class FetchMakulMhsTask extends AsyncTask<Void, Void, Void> {
         return null;
     }
 
-    long addMakul(String id_makul, String name){
-        long makulId;
-        ContentValues makulValues = new ContentValues();
-        makulValues.put(ScoreContract.MakulEntry.COLUMN_ID_MAKUL, id_makul);
-        makulValues.put(ScoreContract.MakulEntry.COLUMN_NAMA_MAKUL, name);
-
-        Cursor makulCursor = mContext.getContentResolver().query(
-                ScoreContract.MakulEntry.CONTENT_URI,
-                new String[]{ScoreContract.MakulEntry._ID},
-                ScoreContract.MakulEntry.COLUMN_ID_MAKUL + " = ?",
-                new String[]{id_makul},
-                null
-        );
-
-        if(makulCursor.moveToFirst()){
-            int makulIdIndex = makulCursor.getColumnIndex(ScoreContract.MakulEntry._ID);
-            makulId = makulCursor.getLong(makulIdIndex);
-            mContext.getContentResolver().update(
-                    ScoreContract.MakulEntry.CONTENT_URI,
-                    makulValues,
-                    ScoreContract.MakulEntry._ID + " = ? ",
-                    new String[]{String.valueOf(makulId)}
-            );
-
-        }else{
-            Uri insertedId = mContext.getContentResolver().insert(
-                    ScoreContract.MakulEntry.CONTENT_URI,
-                    makulValues
-            );
-            makulId = ContentUris.parseId(insertedId);
-        }
-        makulCursor.close();
-        return makulId;
-    }
         /*@Override
         protected void onPostExecute(String[] result) {
             if (result != null){
