@@ -5,32 +5,6 @@
     tools:context="com.digit.safian.scoretracker.NilaiMhsActivity"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center_horizontal">
-    <TableLayout
-        android:id="@+id/table_header"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center_horizontal"
-            android:id="@+id/fillable_area">
-            <TableLayout
-                android:id="@+id/fixed_column"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <HorizontalScrollView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-                <TableLayout
-                    android:id="@+id/scrollable_part"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"/>
-            </HorizontalScrollView>
-        </LinearLayout>
-    </ScrollView>
+    android:layout_height="fill_parent">
+
 </LinearLayout>
