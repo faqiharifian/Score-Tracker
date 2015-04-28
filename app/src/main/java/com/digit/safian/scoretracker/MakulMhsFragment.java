@@ -1,12 +1,13 @@
 package com.digit.safian.scoretracker;
 
-import android.app.LoaderManager;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +18,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.digit.safian.scoretracker.data.ScoreContract;
+
+//import android.content.Loader;
+//import android.support.v4.content.Loader;
 
 public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final int MAKUL_LOADER = 0;
@@ -71,7 +75,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
         Cursor cur = getActivity().getContentResolver().query(makulUri, null, null, null, sortOrder);
 
-        mMakulAdapter = new MakulAdapter(getActivity(), cur, 0);
+        mMakulAdapter = new MakulAdapter(getActivity(), null, 0);
 
         ListView listView = (ListView) rootView.findViewById(R.id.listview_makul_mhs);
         listView.setAdapter(mMakulAdapter);
@@ -88,17 +92,30 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+    public void onActivityCreated(Bundle savedInstanceState){
+        getLoaderManager().initLoader(MAKUL_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        Uri makulUri = ScoreContract.MakulEntry.CONTENT_URI;
+        return new CursorLoader(
+                getActivity(),
+                makulUri,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        mMakulAdapter.swapCursor(cursor);
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        mMakulAdapter.swapCursor(null);
     }
 }
