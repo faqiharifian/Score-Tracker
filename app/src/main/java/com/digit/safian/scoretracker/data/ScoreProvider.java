@@ -280,7 +280,8 @@ public class ScoreProvider extends ContentProvider {
                 Cursor existingCursor = db.query(
                         ScoreContract.MakulEntry.TABLE_NAME,
                         new String[] {ScoreContract.MakulEntry._ID, ScoreContract.MakulEntry.COLUMN_ID_MAKUL},
-                        null, null, null, null, null
+                        null, null, null, null,
+                        ScoreContract.MakulEntry.COLUMN_ID_MAKUL + " ASC"
                 );
                 try {
 
