@@ -13,5 +13,6 @@
     <string name="title_activity_dosen">DosenActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_mhs">MhsActivity</string>
+    <string name="title_activity_nilai_mhs">NilaiMhsActivity</string>
 
 </resources>

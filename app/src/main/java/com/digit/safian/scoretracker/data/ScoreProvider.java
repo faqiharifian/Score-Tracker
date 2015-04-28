@@ -292,6 +292,7 @@ public class ScoreProvider extends ContentProvider {
                             Log.v(LOG_TAG, "existing");
                             existingCursor.moveToFirst();
                             while(existingCursor.isAfterLast() == false){
+
                                 String cursor_idMakul = existingCursor.getString(existingCursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_ID_MAKUL));
                                 String value_idMakul = value.getAsString(ScoreContract.MakulEntry.COLUMN_ID_MAKUL);
                                 Log.v(LOG_TAG, "checking");

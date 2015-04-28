@@ -1,5 +1,10 @@
 package com.digit.safian.scoretracker;
 
+import android.app.LoaderManager;
+import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,14 +13,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.util.ArrayList;
+import com.digit.safian.scoretracker.data.ScoreContract;
 
-public class MakulMhsFragment extends Fragment {
-
-    private ArrayAdapter<String> mMakulAdapter;
+public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+    private static final int MAKUL_LOADER = 0;
+    private MakulAdapter mMakulAdapter;
     public MakulMhsFragment() {
     }
 
@@ -61,46 +66,39 @@ public class MakulMhsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_mhs, container, false);
-        mMakulAdapter =
-                new ArrayAdapter<String>(
-                        getActivity(),
-                        R.layout.list_item_makul,
-                        R.id.list_item_makul_textview,
-                        new ArrayList<String>()
-                );
+        String sortOrder = ScoreContract.MakulEntry.COLUMN_ID_MAKUL + " ASC";
+        Uri makulUri = ScoreContract.MakulEntry.CONTENT_URI;
+
+        Cursor cur = getActivity().getContentResolver().query(makulUri, null, null, null, sortOrder);
+
+        mMakulAdapter = new MakulAdapter(getActivity(), cur, 0);
 
         ListView listView = (ListView) rootView.findViewById(R.id.listview_makul_mhs);
         listView.setAdapter(mMakulAdapter);
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String forecast = mMakulAdapter.getItem(position);
-                Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT, forecast);
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l){
+                String makul = (String) mMakulAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), NilaiMhsActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, makul);
                 startActivity(intent);
             }
-        });*/
-        /*String[] makulArray = {
-                "Proyek Perangkat Lunak",
-                "Analisis dan Perancangan Sistem Informasi",
-                "Keamanan Jaringan",
-                "Data Warehouse",
-                "Pemrogramman Konkuren",
-                "Metode Tangkas Perangkat Lunak",
-                "Topik Khusus",
-                "Sistem Temu Balik Informasi"
-        };
-
-        List<String> daftarMakul = new ArrayList<String>(
-                Arrays.asList(makulArray)
-        );
-        mMakulAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                R.layout.list_item_makul,
-                R.id.list_item_makul_textview,
-                daftarMakul
-        );
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_makul_mhs);
-        listView.setAdapter(mMakulAdapter);*/
+        });
         return rootView;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
