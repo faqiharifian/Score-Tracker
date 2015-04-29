@@ -1,13 +1,11 @@
 package com.digit.safian.scoretracker;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+
+import com.digit.safian.scoretracker.table.TableMainLayout;
 
 
 public class NilaiMhsActivity extends ActionBarActivity {
@@ -15,12 +13,13 @@ public class NilaiMhsActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nilai_mhs);
+        /*setContentView(R.layout.activity_nilai_mhs);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new NilaiMhsFragment())
                     .commit();
-        }
+        }*/
+        setContentView(new TableMainLayout(this));
     }
 
 
@@ -49,16 +48,15 @@ public class NilaiMhsActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_nilai_mhs, container, false);
-            return rootView;
-        }
+    private void updateMakulMhs(){
+        FetchNilaiMhsTask nilaiTask = new FetchNilaiMhsTask(this);
+        nilaiTask.execute("8");
     }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        updateMakulMhs();
+    }
+
 }

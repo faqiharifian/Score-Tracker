@@ -18,6 +18,7 @@ package com.digit.safian.scoretracker.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.digit.safian.scoretracker.data.ScoreContract.MakulEntry;
 import com.digit.safian.scoretracker.data.ScoreContract.NilaiEntry;
@@ -59,7 +60,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
                 // forecasting, it's reasonable to assume the user will want information
                 // for a certain date and all dates *following*, so the forecast data
                 // should be sorted accordingly.
-                NilaiEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                NilaiEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
                 // the ID of the location entry associated with this weather data
 
@@ -70,11 +71,11 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
 
                 // Set up the location column as a foreign key to location table.
                 " FOREIGN KEY (" + NilaiEntry.COLUMN_ID_MAKUL + ") REFERENCES " +
-                MakulEntry.TABLE_NAME + " (" + MakulEntry.COLUMN_ID_MAKUL + ")" +
+                MakulEntry.TABLE_NAME + " (" + MakulEntry.COLUMN_ID_MAKUL + "), " +
                 " UNIQUE (" + NilaiEntry.COLUMN_ID_MAKUL + ", " +
-                NilaiEntry.COLUMN_MAHASISWA + ", " +
-                NilaiEntry.COLUMN_JUDUL + ") ON CONFLICT REPLACE);";
-
+                NilaiEntry.COLUMN_JUDUL + ", " +
+                NilaiEntry.COLUMN_MAHASISWA + ") ON CONFLICT REPLACE);";
+        Log.v("query", SQL_CREATE_NILAI_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_MAKUL_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_NILAI_TABLE);
     }

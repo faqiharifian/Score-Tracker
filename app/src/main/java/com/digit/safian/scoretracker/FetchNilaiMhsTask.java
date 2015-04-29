@@ -17,21 +17,25 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 /**
  * Created by faqih_000 on 4/28/2015.
  */
-public class FetchMakulMhsTask extends AsyncTask<Void, Void, Void> {
+public class FetchNilaiMhsTask extends AsyncTask<String, Void, Void> {
 
     private final Context mContext;
-    public FetchMakulMhsTask(Context context){
+    public FetchNilaiMhsTask(Context context){
         mContext = context;
     }
+
     private final String LOG_TAG = FetchMakulMhsTask.class.getSimpleName();
 
 
-    private void getMakulDataFromJson(String makulJsonStr)
+    private void getMakulDataFromJson(String nilaiJsonStr, String makulId)
             throws JSONException {
         // These are the names of the JSON objects that need to be extracted.
         final String OWM_FEED = "feed";
@@ -40,34 +44,62 @@ public class FetchMakulMhsTask extends AsyncTask<Void, Void, Void> {
         final String OWM_NAME = "gsx$name";
         final String OWM_CONTENT = "$t";
 
-        JSONObject makulJson = new JSONObject(makulJsonStr);
-        JSONObject responseFeed = makulJson.getJSONObject(OWM_FEED);
+        JSONObject nilaiJson = new JSONObject(nilaiJsonStr);
+        JSONObject responseFeed = nilaiJson.getJSONObject(OWM_FEED);
         JSONArray makulArray = responseFeed.getJSONArray(OWM_ENTRIES);
 
-        Vector<ContentValues> cVVector = new Vector<ContentValues>(makulArray.length());
+        Vector<ContentValues> cVector = new Vector<ContentValues>(makulArray.length());
         String[] resultStrs = new String[makulArray.length()];
         for(int i = 0; i < makulArray.length(); i++) {
-            String id_makul;
-            String name;
 
             // Get the JSON object representing the day
             JSONObject iMakul = makulArray.getJSONObject(i);
-            JSONObject idMakul = iMakul.getJSONObject(OWM_ID);
-            JSONObject nameMakul = iMakul.getJSONObject(OWM_NAME);
-            id_makul = idMakul.getString(OWM_CONTENT);
-            name = nameMakul.getString(OWM_CONTENT);
+            Iterator<String> keys = iMakul.keys();
+            ContentValues nilaiValues = null;
+            Map<String, String> values = new HashMap<>();
+            while (keys.hasNext()) {
+                String keyJson = keys.next();
+                String keyValue;
 
-            ContentValues makulValues = new ContentValues();
-            makulValues.put(ScoreContract.MakulEntry.COLUMN_ID_MAKUL, id_makul);
-            makulValues.put(ScoreContract.MakulEntry.COLUMN_NAMA_MAKUL, name);
+                if (keyJson.split("\\$")[0].equals("gsx")) {
+                    keyValue = keyJson.split("\\$")[1];
+                    JSONObject contentJson = iMakul.getJSONObject(keyJson);
+                    String content = contentJson.getString(OWM_CONTENT);
+                    values.put(keyValue, content);
+                }
+            }
+            String mahasiswa = values.get("nama");
+            values.remove("nama");
+            for(String key : values.keySet()){
+                nilaiValues = new ContentValues();
+                Log.v(LOG_TAG, "start");
+                Log.v(LOG_TAG, ScoreContract.NilaiEntry.COLUMN_ID_MAKUL +" = "+ makulId);
+                Log.v(LOG_TAG, ScoreContract.NilaiEntry.COLUMN_MAHASISWA +" = "+ mahasiswa);
+                Log.v(LOG_TAG, ScoreContract.NilaiEntry.COLUMN_JUDUL +" = "+ key);
+                Log.v(LOG_TAG, ScoreContract.NilaiEntry.COLUMN_NILAI +" = "+ values.get(key));
+                Log.v(LOG_TAG, "================NEXT==============");
 
-            cVVector.add(makulValues);
+                nilaiValues.put(ScoreContract.NilaiEntry.COLUMN_ID_MAKUL, makulId);
+                nilaiValues.put(ScoreContract.NilaiEntry.COLUMN_MAHASISWA, mahasiswa);
+                nilaiValues.put(ScoreContract.NilaiEntry.COLUMN_JUDUL, key);
+                nilaiValues.put(ScoreContract.NilaiEntry.COLUMN_NILAI, values.get(key));
+
+                cVector.add(nilaiValues);
+            }
+
+
         }
-        if (cVVector.size() > 0) {
-            ContentValues[] cvArray = new ContentValues[cVVector.size()];
-            cVVector.toArray(cvArray);
+        if (cVector.size() > 0) {
+            for(ContentValues i : cVector){
+                for(String key : i.keySet()){
+                    Log.v(LOG_TAG, key +" = "+ i.getAsString(key));
+                }
+                Log.v(LOG_TAG, "================NEXT==============");
+            }
+            ContentValues[] cvArray = new ContentValues[cVector.size()];
+            cVector.toArray(cvArray);
 
-            mContext.getContentResolver().bulkInsert(ScoreContract.MakulEntry.CONTENT_URI, cvArray);
+            mContext.getContentResolver().bulkInsert(ScoreContract.NilaiEntry.CONTENT_URI, cvArray);
             Log.v(LOG_TAG, "complete");
         }
 
@@ -77,20 +109,25 @@ public class FetchMakulMhsTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... params){
+    protected Void doInBackground(String... params){
+        if (params.length == 0) {
+            return null;
+        }
+        String makulIdQuery = params[0];
+        Log.v(LOG_TAG, makulIdQuery);
         // These two need to be declared outside the try/catch
         // so that they can be closed in the finally block.
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
         // Will contain the raw JSON response as a string.
-        String makulJsonStr = null;
+        String nilaiJsonStr = null;
 
         try {
             // Construct the URL for the OpenWeatherMap query
             // Possible parameters are avaiable at OWM's forecast API page, at
             // http://openweathermap.org/API#forecast
-            URL url = new URL("https://spreadsheets.google.com/feeds/list/1H9Y7zJJ8oUCfoZ9qC07TcnujunnU7OxL0yr9OMEPE64/6/public/values?alt=json");
+            URL url = new URL("https://spreadsheets.google.com/feeds/list/1-wtjHhLl39syH6dDTFzDX-glDGaA3izzI_JBLa0nddQ/"+makulIdQuery+"/public/values?alt=json");
 
             // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -118,8 +155,8 @@ public class FetchMakulMhsTask extends AsyncTask<Void, Void, Void> {
                 // Stream was empty.  No point in parsing.
                 return null;
             }
-            makulJsonStr = buffer.toString();
-            //Log.v(LOG_TAG, makulJsonStr);
+            nilaiJsonStr = buffer.toString();
+            Log.v(LOG_TAG, nilaiJsonStr);
 
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
@@ -139,22 +176,12 @@ public class FetchMakulMhsTask extends AsyncTask<Void, Void, Void> {
             }
         }
         try{
-            getMakulDataFromJson(makulJsonStr);
-            //return getMakulDataFromJson(makulJsonStr);
+            getMakulDataFromJson(nilaiJsonStr, makulIdQuery);
+            //return getMakulDataFromJson(nilaiJsonStr);
         }catch(JSONException e){
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         }
         return null;
     }
-
-        /*@Override
-        protected void onPostExecute(String[] result) {
-            if (result != null){
-                mMakulAdapter.clear();
-                for (String dayForecastStr : result){
-                    mMakulAdapter.add(dayForecastStr);
-                }
-            }
-        }*/
 }

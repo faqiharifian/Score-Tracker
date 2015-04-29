@@ -10,9 +10,9 @@
     <string name="login">Login</string>
     <string name="dosen">DOSEN</string>
     <string name="mhs">MAHASISWA</string>
+    <string name="title_activity_main">Login</string>
     <string name="title_activity_dosen">DosenActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_mhs">MhsActivity</string>
-    <string name="title_activity_nilai_mhs">NilaiMhsActivity</string>
+    <string name="title_activity_mhs">Daftar Mata Kuliah</string>
+    <string name="title_activity_nilai_mhs">Nilai</string>
 
 </resources>
