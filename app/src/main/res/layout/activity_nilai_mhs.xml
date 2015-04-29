@@ -1,10 +1,24 @@
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     tools:context="com.digit.safian.scoretracker.NilaiMhsActivity"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-</LinearLayout>
+    <!--<TableRow
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </TableRow>
+    <ScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+        <TableLayout
+            android:id="@+id/content"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent">
+
+        </TableLayout>
+    </ScrollView>-->
+</FrameLayout>

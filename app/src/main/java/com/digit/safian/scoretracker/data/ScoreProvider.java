@@ -75,15 +75,24 @@ public class ScoreProvider extends ContentProvider {
     }
     private Cursor getNilaiByMakul(Uri uri, String[] projection, String sortOrder){
         String id_makul = ScoreContract.MakulEntry.getIdMakul(uri);
-
-        return sNilaiByMakulSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+        return mOpenHelper.getReadableDatabase().query(
+                ScoreContract.NilaiEntry.TABLE_NAME,
                 projection,
                 sNilaiAndMakul,
                 new String[]{id_makul},
                 null,
                 null,
                 sortOrder
+
         );
+        /*return sNilaiByMakulSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                sNilaiAndMakul,
+                new String[]{id_makul},
+                null,
+                null,
+                sortOrder
+        );*/
     }
 
     private Boolean isIdExist(Integer table, String id){
@@ -349,6 +358,7 @@ public class ScoreProvider extends ContentProvider {
                     db.endTransaction();
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
+
                 return returnCount;
             }
             default:

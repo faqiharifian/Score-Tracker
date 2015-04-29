@@ -5,21 +5,20 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.digit.safian.scoretracker.table.TableMainLayout;
 
+public class NilaiMhsActivity extends ActionBarActivity{
 
-public class NilaiMhsActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*setContentView(R.layout.activity_nilai_mhs);
+        setContentView(R.layout.activity_nilai_mhs);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new NilaiMhsFragment())
                     .commit();
-        }*/
-        setContentView(new TableMainLayout(this));
+        }
+        //setContentView(new TableMainLayout(this));
     }
 
 
@@ -48,15 +47,7 @@ public class NilaiMhsActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    private void updateMakulMhs(){
-        FetchNilaiMhsTask nilaiTask = new FetchNilaiMhsTask(this);
-        nilaiTask.execute("8");
-    }
 
-    @Override
-    public void onStart(){
-        super.onStart();
-        updateMakulMhs();
-    }
+
 
 }
