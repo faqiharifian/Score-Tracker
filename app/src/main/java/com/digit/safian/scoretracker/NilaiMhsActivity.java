@@ -2,20 +2,29 @@ package com.digit.safian.scoretracker;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class NilaiMhsActivity extends ActionBarActivity{
-
+    private final String FragmentTag = "NMF";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        long makulId = getIntent().getExtras().getLong("makulId");
+        Log.v("mhs nilai act", String.valueOf(makulId));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nilai_mhs);
         if (savedInstanceState == null) {
+
+            Bundle args = new Bundle();
+            args.putLong("makulId", makulId);
+            NilaiMhsFragment fragment = new NilaiMhsFragment();
+            fragment.setArguments(args);
+
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new NilaiMhsFragment())
+                    .add(R.id.container, fragment, FragmentTag)
                     .commit();
         }
         //setContentView(new TableMainLayout(this));
@@ -29,20 +38,7 @@ public class NilaiMhsActivity extends ActionBarActivity{
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     /**
      * A placeholder fragment containing a simple view.

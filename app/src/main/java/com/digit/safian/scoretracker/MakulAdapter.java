@@ -33,6 +33,7 @@ public class MakulAdapter extends CursorAdapter{
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         TextView tv = (TextView)view;
+        tv.setId(cursor.getInt(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_ID_MAKUL)));
         tv.setText(convertCursorRowToUXFormat(cursor));
     }
 }

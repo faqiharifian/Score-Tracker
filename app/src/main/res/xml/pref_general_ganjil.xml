@@ -1,0 +1,18 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ListPreference
+        android:title="@string/pref_semester_label"
+        android:key="@string/pref_semester_key"
+        android:entryValues="@array/pref_semester_ganjil"
+        android:entries="@array/pref_semester_ganjil"/>
+    <ListPreference
+        android:title="@string/pref_notif_label"
+        android:key="@string/pref_notif_key"
+        android:defaultValue="@string/pref_notif_key_on"
+        android:entryValues="@array/pref_notif_values"
+        android:entries="@array/pref_notif_options"/>
+
+</PreferenceScreen>

@@ -1,13 +1,16 @@
 package com.digit.safian.scoretracker;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,12 +28,16 @@ import com.digit.safian.scoretracker.data.ScoreContract;
 public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final int MAKUL_LOADER = 0;
     private MakulAdapter mMakulAdapter;
+    private String mSemester;
+
     public MakulMhsFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mSemester = prefs.getString(getString(R.string.pref_semester_key), "");
         // Add this line in order for this fragment to handle menu events
         setHasOptionsMenu(true);
     }
@@ -49,13 +56,29 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         if (id == com.digit.safian.scoretracker.R.id.action_refresh){
             updateMakulMhs();
             return true;
+        }else if(id == R.id.action_settings){
+            startActivity(new Intent(getActivity(), SettingsActivity.class));
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void updateMakulMhs(){
         FetchMakulMhsTask makulTask = new FetchMakulMhsTask(getActivity());
-        makulTask.execute();
+        int semesterInt = Integer.parseInt(mSemester);
+        makulTask.execute(mSemester);
+        if(semesterInt % 2 == 0 && semesterInt >= 6){
+            FetchMakulMhsTask newMakulTask = new FetchMakulMhsTask(getActivity());
+            newMakulTask.execute("8");
+        }else if(semesterInt % 2 == 1 && semesterInt >= 5){
+            FetchMakulMhsTask newMakulTask = new FetchMakulMhsTask(getActivity());
+            newMakulTask.execute("7");
+        }
+    }
+
+    void onLocationChanged( ) {
+        updateMakulMhs();
+        getLoaderManager().restartLoader(MAKUL_LOADER, null, this);
     }
 
     @Override
@@ -64,7 +87,16 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         updateMakulMhs();
     }
 
-
+    @Override
+    public void onResume(){
+        super.onResume();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String semester = prefs.getString(getString(R.string.pref_semester_key), "");
+        if (semester != null && !semester.equals(mSemester)) {
+            mSemester = semester;
+            onLocationChanged();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,10 +114,11 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l){
-                /*String makul = (String) mMakulAdapter.getItem(position);
+                long makul = mMakulAdapter.getItemId(position);
+                Log.v("makul id clicked", String.valueOf(makul));
                 Intent intent = new Intent(getActivity(), NilaiMhsActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, makul);*/
-                Intent intent = new Intent(getActivity(), NilaiMhsActivity.class);
+                        .putExtra("makulId", makul);
+                //Intent intent = new Intent(getActivity(), NilaiMhsActivity.class);
                 startActivity(intent);
             }
         });
@@ -99,7 +132,8 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
     }
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        Uri makulUri = ScoreContract.MakulEntry.CONTENT_URI;
+
+        Uri makulUri = ScoreContract.MakulEntry.buildMakulWithSemesterUri(mSemester);
         return new CursorLoader(
                 getActivity(),
                 makulUri,

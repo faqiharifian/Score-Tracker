@@ -23,7 +23,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
 public class ScoreProvider extends ContentProvider {
     private final String LOG_TAG = ScoreProvider.class.getSimpleName();
@@ -32,6 +31,7 @@ public class ScoreProvider extends ContentProvider {
     private ScoreDbHelper mOpenHelper;
 
     static final int MAKUL = 100;
+    static final int MAKUL_BY_SEMESTER = 101;
     static final int NILAI_BY_MAKUL = 202;
     static final int NILAI = 200;
 
@@ -61,6 +61,14 @@ public class ScoreProvider extends ContentProvider {
             ScoreContract.NilaiEntry.TABLE_NAME +
                     "." + ScoreContract.NilaiEntry.COLUMN_ID_MAKUL + " = ?";
 
+    private static final String sMakulBySemester =
+            ScoreContract.MakulEntry.TABLE_NAME +
+                    "." + ScoreContract.MakulEntry.COLUMN_SEMESTER + " = ?";
+
+    private static final String sMakulBySemesterAkhir =
+            ScoreContract.MakulEntry.TABLE_NAME +
+                    "." + ScoreContract.MakulEntry.COLUMN_SEMESTER + " = ?" + " OR " +
+                    ScoreContract.MakulEntry.TABLE_NAME + "." + ScoreContract.MakulEntry.COLUMN_SEMESTER + " = ?";
 
     private Cursor getMakul(Uri uri, String[] projection, String sortOrder){
         return mOpenHelper.getReadableDatabase().query(
@@ -72,6 +80,41 @@ public class ScoreProvider extends ContentProvider {
                 null,
                 sortOrder
         );
+    }
+    private Cursor getMakulBySemester(Uri uri, String[] projection, String sortOrder){
+        String semester = ScoreContract.MakulEntry.getSemester(uri);
+        if(semester.equals("5")){
+            return mOpenHelper.getReadableDatabase().query(
+                    ScoreContract.MakulEntry.TABLE_NAME,
+                    projection,
+                    sMakulBySemesterAkhir,
+                    new String[]{semester, "7"},
+                    null,
+                    null,
+                    sortOrder
+            );
+        }else if(semester.equals("6")){
+            return mOpenHelper.getReadableDatabase().query(
+                    ScoreContract.MakulEntry.TABLE_NAME,
+                    projection,
+                    sMakulBySemesterAkhir,
+                    new String[]{semester, "8"},
+                    null,
+                    null,
+                    sortOrder
+            );
+        }else{
+            return mOpenHelper.getReadableDatabase().query(
+                    ScoreContract.MakulEntry.TABLE_NAME,
+                    projection,
+                    sMakulBySemester,
+                    new String[]{semester},
+                    null,
+                    null,
+                    sortOrder
+            );
+        }
+
     }
     private Cursor getNilaiByMakul(Uri uri, String[] projection, String sortOrder){
         String id_makul = ScoreContract.MakulEntry.getIdMakul(uri);
@@ -118,6 +161,7 @@ public class ScoreProvider extends ContentProvider {
         final String authority = ScoreContract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, ScoreContract.PATH_MAKUL, MAKUL);
+        matcher.addURI(authority, ScoreContract.PATH_MAKUL + "/*", MAKUL_BY_SEMESTER);
 
         matcher.addURI(authority, ScoreContract.PATH_NILAI, NILAI);
         matcher.addURI(authority, ScoreContract.PATH_NILAI + "/*", NILAI_BY_MAKUL);
@@ -171,6 +215,11 @@ public class ScoreProvider extends ContentProvider {
             case MAKUL:
             {
                 retCursor = getMakul(uri, projection, sortOrder);
+                break;
+            }
+            case MAKUL_BY_SEMESTER:
+            {
+                retCursor = getMakulBySemester(uri, projection, sortOrder);
                 break;
             }
             // "weather/*"
@@ -299,36 +348,36 @@ public class ScoreProvider extends ContentProvider {
                         long makulId = -1;
                         long _id = -1;
                         if(existingCursor != null){
-                            Log.v(LOG_TAG, "existing");
+                            //Log.v(LOG_TAG, "existing");
                             existingCursor.moveToFirst();
                             while(existingCursor.isAfterLast() == false){
 
                                 String cursor_idMakul = existingCursor.getString(existingCursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_ID_MAKUL));
                                 String value_idMakul = value.getAsString(ScoreContract.MakulEntry.COLUMN_ID_MAKUL);
-                                Log.v(LOG_TAG, "checking");
+                                /*Log.v(LOG_TAG, "checking");
                                 Log.v(LOG_TAG, "cursor.id_makul: "+cursor_idMakul);
                                 Log.v(LOG_TAG, "value.id_makul: "+value_idMakul);
-                                Log.v(LOG_TAG, "comparing: "+(cursor_idMakul.equals(value_idMakul)));
+                                Log.v(LOG_TAG, "comparing: "+(cursor_idMakul.equals(value_idMakul)));*/
                                 if(cursor_idMakul.equals(value_idMakul)){
                                     makulId = existingCursor.getLong(existingCursor.getColumnIndex(ScoreContract.MakulEntry._ID));
-                                    Log.v(LOG_TAG, "exist");
+                                    //Log.v(LOG_TAG, "exist");
                                     break;
                                 }
                                 existingCursor.moveToNext();
                             }
-                            Log.v(LOG_TAG, "makulId: "+makulId);
+                            //Log.v(LOG_TAG, "makulId: "+makulId);
                             if(makulId != -1) {
                                 _id = db.update(
                                         ScoreContract.MakulEntry.TABLE_NAME,
                                         value,
                                         ScoreContract.MakulEntry._ID + " = ?",
                                         new String[]{String.valueOf(makulId)});
-                                Log.v(LOG_TAG, "updated");
+                                //Log.v(LOG_TAG, "updated");
                             }
                         }
                         if(makulId == -1){
                             _id = db.insert(ScoreContract.MakulEntry.TABLE_NAME, null, value);
-                            Log.v(LOG_TAG, "inserted");
+                            //Log.v(LOG_TAG, "inserted");
                         }
                         if (_id != -1) {
                             returnCount++;

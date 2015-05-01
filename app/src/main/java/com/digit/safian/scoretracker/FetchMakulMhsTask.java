@@ -22,23 +22,26 @@ import java.util.Vector;
 /**
  * Created by faqih_000 on 4/28/2015.
  */
-public class FetchMakulMhsTask extends AsyncTask<Void, Void, Void> {
+public class FetchMakulMhsTask extends AsyncTask<String, Void, Void> {
 
     private final Context mContext;
     public FetchMakulMhsTask(Context context){
         mContext = context;
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        //mSemester = prefs.getString(mContext.getString(R.string.pref_semester_key), "");
     }
     private final String LOG_TAG = FetchMakulMhsTask.class.getSimpleName();
 
 
-    private void getMakulDataFromJson(String makulJsonStr)
+    private void getMakulDataFromJson(String makulJsonStr, String semester)
             throws JSONException {
         // These are the names of the JSON objects that need to be extracted.
         final String OWM_FEED = "feed";
         final String OWM_ENTRIES = "entry";
         final String OWM_ID = "gsx$id";
-        final String OWM_NAME = "gsx$name";
+        final String OWM_NAME = "gsx$nama";
         final String OWM_CONTENT = "$t";
+
 
         JSONObject makulJson = new JSONObject(makulJsonStr);
         JSONObject responseFeed = makulJson.getJSONObject(OWM_FEED);
@@ -60,6 +63,7 @@ public class FetchMakulMhsTask extends AsyncTask<Void, Void, Void> {
             ContentValues makulValues = new ContentValues();
             makulValues.put(ScoreContract.MakulEntry.COLUMN_ID_MAKUL, id_makul);
             makulValues.put(ScoreContract.MakulEntry.COLUMN_NAMA_MAKUL, name);
+            makulValues.put(ScoreContract.MakulEntry.COLUMN_SEMESTER, semester);
 
             cVVector.add(makulValues);
         }
@@ -77,11 +81,15 @@ public class FetchMakulMhsTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... params){
+    protected Void doInBackground(String... params){
         // These two need to be declared outside the try/catch
         // so that they can be closed in the finally block.
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
+
+        if (params.length == 0){
+            return null;
+        }
 
         // Will contain the raw JSON response as a string.
         String makulJsonStr = null;
@@ -90,7 +98,7 @@ public class FetchMakulMhsTask extends AsyncTask<Void, Void, Void> {
             // Construct the URL for the OpenWeatherMap query
             // Possible parameters are avaiable at OWM's forecast API page, at
             // http://openweathermap.org/API#forecast
-            URL url = new URL("https://spreadsheets.google.com/feeds/list/1H9Y7zJJ8oUCfoZ9qC07TcnujunnU7OxL0yr9OMEPE64/6/public/values?alt=json");
+            URL url = new URL("https://spreadsheets.google.com/feeds/list/1H9Y7zJJ8oUCfoZ9qC07TcnujunnU7OxL0yr9OMEPE64/"+params[0]+"/public/values?alt=json");
 
             // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -139,7 +147,7 @@ public class FetchMakulMhsTask extends AsyncTask<Void, Void, Void> {
             }
         }
         try{
-            getMakulDataFromJson(makulJsonStr);
+            getMakulDataFromJson(makulJsonStr, params[0]);
             //return getMakulDataFromJson(makulJsonStr);
         }catch(JSONException e){
             Log.e(LOG_TAG, e.getMessage(), e);

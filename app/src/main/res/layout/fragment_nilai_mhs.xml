@@ -2,6 +2,37 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.digit.safian.scoretracker.NilaiMhsActivity.NilaiMhsFragment">
+    <TableRow
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffc3c3c3">
+        <TextView
+            android:id="@+id/nama"
+            android:text="Nama"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="3dp"/>
+        <TextView
+            android:id="@+id/uts"
+            android:text="Judul"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="3dp"/>
+        <TextView
+            android:id="@+id/uas"
+            android:text="Nilai"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="3dp"/>
+    </TableRow>
     <ListView
         android:id="@+id/listview_nilai_mhs"
         android:layout_width="match_parent"

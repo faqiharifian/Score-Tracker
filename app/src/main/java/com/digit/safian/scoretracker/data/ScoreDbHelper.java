@@ -52,6 +52,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
                 // the ID of the location entry associated with this weather data
                 MakulEntry.COLUMN_ID_MAKUL + " TEXT NOT NULL," +
                 MakulEntry.COLUMN_NAMA_MAKUL + " TEXT NOT NULL, "+
+                MakulEntry.COLUMN_SEMESTER + " TEXT NOT NULL, "+
                 " UNIQUE (" + MakulEntry.COLUMN_ID_MAKUL + ") ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_NILAI_TABLE = "CREATE TABLE " + NilaiEntry.TABLE_NAME + " (" +

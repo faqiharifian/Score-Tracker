@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="pref_semester_ganjil">
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="pref_semester_genap">
+        <item>2</item>
+        <item>4</item>
+        <item>6</item>
+    </string-array>
+    <string-array name="pref_notif_options">
+        <item>@string/pref_notif_label_on</item>
+        <item>@string/pref_notif_label_off</item>
+    </string-array>
+    <string-array name="pref_notif_values">
+        <item>@string/pref_notif_key_on</item>
+        <item>@string/pref_notif_key_off</item>
+    </string-array>
+</resources>

@@ -72,12 +72,12 @@ public class FetchNilaiMhsTask extends AsyncTask<String, Void, Void> {
             values.remove("nama");
             for(String key : values.keySet()){
                 nilaiValues = new ContentValues();
-                Log.v(LOG_TAG, "start");
+                /*Log.v(LOG_TAG, "start");
                 Log.v(LOG_TAG, ScoreContract.NilaiEntry.COLUMN_ID_MAKUL +" = "+ makulId);
                 Log.v(LOG_TAG, ScoreContract.NilaiEntry.COLUMN_MAHASISWA +" = "+ mahasiswa);
                 Log.v(LOG_TAG, ScoreContract.NilaiEntry.COLUMN_JUDUL +" = "+ key);
                 Log.v(LOG_TAG, ScoreContract.NilaiEntry.COLUMN_NILAI +" = "+ values.get(key));
-                Log.v(LOG_TAG, "================NEXT==============");
+                Log.v(LOG_TAG, "================NEXT==============");*/
 
                 nilaiValues.put(ScoreContract.NilaiEntry.COLUMN_ID_MAKUL, makulId);
                 nilaiValues.put(ScoreContract.NilaiEntry.COLUMN_MAHASISWA, mahasiswa);
@@ -90,12 +90,12 @@ public class FetchNilaiMhsTask extends AsyncTask<String, Void, Void> {
 
         }
         if (cVector.size() > 0) {
-            for(ContentValues i : cVector){
+            /*for(ContentValues i : cVector){
                 for(String key : i.keySet()){
                     Log.v(LOG_TAG, key +" = "+ i.getAsString(key));
                 }
                 Log.v(LOG_TAG, "================NEXT==============");
-            }
+            }*/
             ContentValues[] cvArray = new ContentValues[cVector.size()];
             cVector.toArray(cvArray);
 

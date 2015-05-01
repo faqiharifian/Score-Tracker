@@ -14,5 +14,15 @@
     <string name="title_activity_dosen">DosenActivity</string>
     <string name="title_activity_mhs">Daftar Mata Kuliah</string>
     <string name="title_activity_nilai_mhs">Nilai</string>
+    <string name="pref_notif_label">Notification</string>
+    <string name="pref_notif_key">notification</string>
+    <string name="pref_notif_label_on">On</string>
+    <string name="pref_notif_label_off">Off</string>
+    <string name="pref_notif_key_on">on</string>
+    <string name="pref_notif_key_off">off</string>
+    <string name="pref_semester_label">Semester</string>
+    <string name="pref_semester_key">semester</string>
+    <string name="pref_semester_ganjil">ganjil</string>
+    <string name="pref_semester_genap">genap</string>
 
 </resources>
