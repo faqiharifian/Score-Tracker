@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.digit.safian.scoretracker.data.ScoreContract;
 
@@ -29,6 +30,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
     private static final int MAKUL_LOADER = 0;
     private MakulAdapter mMakulAdapter;
     private String mSemester;
+    private static Menu optionsMenu;
 
     public MakulMhsFragment() {
     }
@@ -44,6 +46,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        this.optionsMenu = menu;
         inflater.inflate(R.menu.menu_mhs,menu);
     }
 
@@ -55,12 +58,29 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         int id = item.getItemId();
         if (id == com.digit.safian.scoretracker.R.id.action_refresh){
             updateMakulMhs();
+            setRefreshState(true);
             return true;
         }else if(id == R.id.action_settings){
             startActivity(new Intent(getActivity(), SettingsActivity.class));
             return true;
+        }else if(id == R.id.action_about){
+            startActivity(new Intent(getActivity(), AboutActivity.class));
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void setRefreshState(final boolean refreshing){
+        if(optionsMenu != null){
+            final MenuItem refreshItem = optionsMenu.findItem(R.id.action_refresh);
+            if(refreshItem != null){
+                if(refreshing){
+                    refreshItem.setActionView(R.layout.actionbar_indeterminate_progress);
+                }else{
+                    refreshItem.setActionView(null);
+                }
+            }
+        }
     }
 
     private void updateMakulMhs(){
@@ -114,10 +134,14 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l){
-                long makul = mMakulAdapter.getItemId(position);
+                long makul = view.getId();
+                TextView titleView = (TextView) view;
+                String title = titleView.getText().toString();
+                //long makul = mMakulAdapter.getItemId(position);
                 Log.v("makul id clicked", String.valueOf(makul));
                 Intent intent = new Intent(getActivity(), NilaiMhsActivity.class)
-                        .putExtra("makulId", makul);
+                        .putExtra("makulId", makul)
+                        .putExtra("title", title);
                 //Intent intent = new Intent(getActivity(), NilaiMhsActivity.class);
                 startActivity(intent);
             }

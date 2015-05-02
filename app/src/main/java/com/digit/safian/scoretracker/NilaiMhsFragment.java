@@ -25,12 +25,14 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
     long makulId = -1;
 
 
+
     public NilaiMhsFragment() {
         //Log.v("NilaiMhsFragment", "created");
     }
 
     private void updateNilaiMhs(){
         //Log.v("update: ","called");
+        NilaiMhsActivity.setRefreshState(true);
         FetchNilaiMhsTask nilaiTask = new FetchNilaiMhsTask(getActivity());
         nilaiTask.execute(String.valueOf(makulId));
     }
@@ -41,6 +43,8 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         super.onStart();
         updateNilaiMhs();
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -64,12 +68,13 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         View rootView = inflater.inflate(R.layout.fragment_nilai_mhs, container, false);
         //Log.v("CreateView", "called");
 
+
         Bundle bundle = getArguments();
         if(bundle != null) {
             makulId = bundle.getLong("makulId");
         }
         //Log.v("makulId", String.valueOf(makulId));
-        String sortOrder = ScoreContract.NilaiEntry.COLUMN_NILAI +" ASC";
+
         //Uri nilaiUri = ScoreContract.NilaiEntry.buildNilaiUri(makulId);
 
         //Cursor cur = getActivity().getContentResolver().query(nilaiUri, null, null, null, sortOrder);
@@ -81,6 +86,8 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
         return rootView;
     }
+
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){

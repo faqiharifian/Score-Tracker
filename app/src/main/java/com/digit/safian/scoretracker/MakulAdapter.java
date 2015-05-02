@@ -35,5 +35,8 @@ public class MakulAdapter extends CursorAdapter{
         TextView tv = (TextView)view;
         tv.setId(cursor.getInt(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_ID_MAKUL)));
         tv.setText(convertCursorRowToUXFormat(cursor));
+        /*Log.v("expected "+ cursor.getString(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_NAMA_MAKUL)), String.valueOf(tv.getId()));
+        Log.v("reality" + cursor.getString(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_NAMA_MAKUL)), String.valueOf(tv.getId()));
+        Log.v("a", "------------------------");*/
     }
 }

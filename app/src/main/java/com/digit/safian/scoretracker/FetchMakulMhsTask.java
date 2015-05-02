@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.digit.safian.scoretracker.data.ScoreContract;
 
@@ -22,18 +23,22 @@ import java.util.Vector;
 /**
  * Created by faqih_000 on 4/28/2015.
  */
-public class FetchMakulMhsTask extends AsyncTask<String, Void, Void> {
+public class FetchMakulMhsTask extends AsyncTask<String, Void, String[]> {
 
+    MenuItem refreshItem;
     private final Context mContext;
     public FetchMakulMhsTask(Context context){
         mContext = context;
+
+        /*optionsMenu = MakulMhsFragment.getMenu();
+        refreshItem = optionsMenu.findItem(R.id.action_refresh);*/
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         //mSemester = prefs.getString(mContext.getString(R.string.pref_semester_key), "");
     }
     private final String LOG_TAG = FetchMakulMhsTask.class.getSimpleName();
 
 
-    private void getMakulDataFromJson(String makulJsonStr, String semester)
+    private String[] getMakulDataFromJson(String makulJsonStr, String semester)
             throws JSONException {
         // These are the names of the JSON objects that need to be extracted.
         final String OWM_FEED = "feed";
@@ -76,12 +81,14 @@ public class FetchMakulMhsTask extends AsyncTask<String, Void, Void> {
         }
 
 
-        //return resultStrs;
+        return new String[]{"complete"};
 
     }
 
     @Override
-    protected Void doInBackground(String... params){
+    protected String[] doInBackground(String... params){
+
+
         // These two need to be declared outside the try/catch
         // so that they can be closed in the finally block.
         HttpURLConnection urlConnection = null;
@@ -147,7 +154,7 @@ public class FetchMakulMhsTask extends AsyncTask<String, Void, Void> {
             }
         }
         try{
-            getMakulDataFromJson(makulJsonStr, params[0]);
+            return getMakulDataFromJson(makulJsonStr, params[0]);
             //return getMakulDataFromJson(makulJsonStr);
         }catch(JSONException e){
             Log.e(LOG_TAG, e.getMessage(), e);
@@ -156,13 +163,9 @@ public class FetchMakulMhsTask extends AsyncTask<String, Void, Void> {
         return null;
     }
 
-        /*@Override
+        @Override
         protected void onPostExecute(String[] result) {
-            if (result != null){
-                mMakulAdapter.clear();
-                for (String dayForecastStr : result){
-                    mMakulAdapter.add(dayForecastStr);
-                }
-            }
-        }*/
+            MakulMhsFragment.setRefreshState(false);
+
+        }
 }

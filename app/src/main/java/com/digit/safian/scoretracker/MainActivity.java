@@ -16,10 +16,13 @@ import java.util.Date;
 
 
 public class MainActivity extends ActionBarActivity {
-
+    Boolean login = true;
     private final String LOG_TAG = MainActivity.class.getSimpleName();
-
     protected void onCreate(Bundle savedInstanceState) {
+        if(login == true){
+            Intent intent = new Intent(MainActivity.this, MhsActivity.class);
+            startActivity(intent);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final Button login_button = (Button) findViewById(R.id.login_button);
@@ -49,6 +52,14 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(login == true){
+            Intent intent = new Intent(MainActivity.this, MhsActivity.class);
+            startActivity(intent);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

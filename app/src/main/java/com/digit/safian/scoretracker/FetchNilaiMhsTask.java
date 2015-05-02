@@ -102,6 +102,7 @@ public class FetchNilaiMhsTask extends AsyncTask<String, Void, Void> {
             mContext.getContentResolver().bulkInsert(ScoreContract.NilaiEntry.CONTENT_URI, cvArray);
             Log.v(LOG_TAG, "complete");
         }
+        NilaiMhsFragment.setRefreshState(false);
 
 
         //return resultStrs;
