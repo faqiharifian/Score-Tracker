@@ -33,6 +33,7 @@ public class ScoreProvider extends ContentProvider {
     static final int MAKUL = 100;
     static final int MAKUL_BY_SEMESTER = 101;
     static final int NILAI_BY_MAKUL = 202;
+    static final int NILAI_JUDUL = 201;
     static final int NILAI = 200;
 
     private static final SQLiteQueryBuilder sNilaiByMakulSettingQueryBuilder;
@@ -58,6 +59,12 @@ public class ScoreProvider extends ContentProvider {
 
     //location.location_setting = ? AND date = ?
     private static final String sNilaiAndMakul =
+            ScoreContract.NilaiEntry.TABLE_NAME +
+                    "." + ScoreContract.NilaiEntry.COLUMN_ID_MAKUL + " = ?" + " AND " +
+                    ScoreContract.NilaiEntry.TABLE_NAME +
+            "." + ScoreContract.NilaiEntry.COLUMN_JUDUL + " = ?";
+
+    private static final String sNilaiAndJudul =
             ScoreContract.NilaiEntry.TABLE_NAME +
                     "." + ScoreContract.NilaiEntry.COLUMN_ID_MAKUL + " = ?";
 
@@ -117,25 +124,31 @@ public class ScoreProvider extends ContentProvider {
 
     }
     private Cursor getNilaiByMakul(Uri uri, String[] projection, String sortOrder){
-        String id_makul = ScoreContract.MakulEntry.getIdMakul(uri);
+        String id_makul = ScoreContract.NilaiEntry.getIdMakul(uri);
+        String judul_nilai = ScoreContract.NilaiEntry.getJudul(uri);
         return mOpenHelper.getReadableDatabase().query(
                 ScoreContract.NilaiEntry.TABLE_NAME,
                 projection,
                 sNilaiAndMakul,
-                new String[]{id_makul},
+                new String[]{id_makul, judul_nilai},
                 null,
                 null,
                 sortOrder
 
         );
-        /*return sNilaiByMakulSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+    }
+
+    private Cursor getNilaiJudul(Uri uri, String[] projection, String sortOrder){
+        String id_makul = ScoreContract.NilaiEntry.getIdMakul(uri);
+        return mOpenHelper.getReadableDatabase().query(
+                ScoreContract.NilaiEntry.TABLE_NAME,
                 projection,
-                sNilaiAndMakul,
+                sNilaiAndJudul,
                 new String[]{id_makul},
+                ScoreContract.NilaiEntry.COLUMN_JUDUL,
                 null,
-                null,
-                sortOrder
-        );*/
+                null
+        );
     }
 
     private Boolean isIdExist(Integer table, String id){
@@ -164,7 +177,8 @@ public class ScoreProvider extends ContentProvider {
         matcher.addURI(authority, ScoreContract.PATH_MAKUL + "/*", MAKUL_BY_SEMESTER);
 
         matcher.addURI(authority, ScoreContract.PATH_NILAI, NILAI);
-        matcher.addURI(authority, ScoreContract.PATH_NILAI + "/*", NILAI_BY_MAKUL);
+        matcher.addURI(authority, ScoreContract.PATH_NILAI + "/*/*", NILAI_BY_MAKUL);
+        matcher.addURI(authority, ScoreContract.PATH_NILAI + "/*", NILAI_JUDUL);
         return matcher;
     }
 
@@ -225,6 +239,10 @@ public class ScoreProvider extends ContentProvider {
             // "weather/*"
             case NILAI_BY_MAKUL: {
                 retCursor = getNilaiByMakul(uri, projection, sortOrder);
+                break;
+            }
+            case NILAI_JUDUL: {
+                retCursor = getNilaiJudul(uri, projection, sortOrder);
                 break;
             }
             case NILAI:{

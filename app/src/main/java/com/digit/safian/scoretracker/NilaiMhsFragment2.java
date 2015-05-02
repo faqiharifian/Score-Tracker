@@ -15,20 +15,18 @@ import android.widget.ListView;
 
 import com.digit.safian.scoretracker.data.ScoreContract;
 
-import java.util.List;
-
 
 /**
  * Created by faqih_000 on 4/28/2015.
  */
-public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Cursor>>{
+public class NilaiMhsFragment2 extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final int NILAI_LOADER = 1;
     private NilaiAdapter mNilaiAdapter;
     long makulId = -1;
 
 
 
-    public NilaiMhsFragment() {
+    public NilaiMhsFragment2() {
         //Log.v("NilaiMhsFragment", "created");
     }
 
@@ -95,31 +93,49 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
     public void onActivityCreated(Bundle savedInstanceState){
         //Log.v("onActivityCreated", "called");
         getLoaderManager().initLoader(10, null, this);
+        getLoaderManager().initLoader(11, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
-    public Loader<List<Cursor>> onCreateLoader(int i, Bundle bundle) {
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         //Log.v("onCreateLoader ", "called");
-        Uri nilaiUri = ScoreContract.NilaiEntry.buildNilaiJudulUri(String.valueOf(makulId));
-        Cursor c = getActivity().getContentResolver().query(
-                nilaiUri,
-                new String[]{ScoreContract.NilaiEntry.COLUMN_ID_MAKUL, ScoreContract.NilaiEntry.COLUMN_JUDUL},
-                null,
-                null,
-                null
-                );
-        return new NilaiLoader(getActivity(), c);
+        CursorLoader cL;
+        Uri nilaiUri = ScoreContract.NilaiEntry.buildNilaiMakulUri(String.valueOf(makulId));
+        if(i == 10){
+            cL = new CursorLoader(
+                    getActivity(),
+                    nilaiUri,
+                    null,
+                    ScoreContract.NilaiEntry.COLUMN_JUDUL + " = ?",
+                    new String[]{"uts"},
+                    ScoreContract.NilaiEntry.COLUMN_MAHASISWA + " ASC"
+            );
+        }else{
+            cL = new CursorLoader(
+                    getActivity(),
+                    nilaiUri,
+                    null,
+                    ScoreContract.NilaiEntry.COLUMN_JUDUL + " = ?",
+                    new String[]{"uas"},
+                    ScoreContract.NilaiEntry.COLUMN_MAHASISWA + " ASC"
+            );
+        }
+
+
+
+
+        return cL;
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Cursor>> cursorLoader, List<Cursor> cursor) {
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         //Log.v("onLoadFinished ", "called");
         mNilaiAdapter.swapCursor(cursor);
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Cursor>> cursorLoader) {
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
         //Log.v("onLoaderReset ", "called");
         mNilaiAdapter.swapCursor(null);
     }

@@ -66,9 +66,7 @@ public class ScoreContract {
         public static String getSemester(Uri uri){
             return uri.getPathSegments().get(1);
         }
-        public static String getIdMakul(Uri uri){
-            return uri.getPathSegments().get(1);
-        }
+
     }
 
     public static final class NilaiEntry implements BaseColumns {
@@ -93,7 +91,11 @@ public class ScoreContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildNilaiMakulUri(String makulId){
+        public static Uri buildNilaiMakulUri(String makulId, String judul){
+            return CONTENT_URI.buildUpon().appendPath(makulId).appendPath(judul).build();
+        }
+
+        public static Uri buildNilaiJudulUri(String makulId){
             return CONTENT_URI.buildUpon().appendPath(makulId).build();
         }
 
@@ -101,7 +103,13 @@ public class ScoreContract {
             return uri.getPathSegments().get(1);
         }
 
+        public static String getIdMakul(Uri uri){
+            return uri.getPathSegments().get(1);
+        }
 
+        public static String getJudul(Uri uri) {
+            return uri.getPathSegments().get(2);
+        }
     }
 
 
