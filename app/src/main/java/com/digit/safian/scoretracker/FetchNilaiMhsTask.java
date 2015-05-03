@@ -32,7 +32,7 @@ public class FetchNilaiMhsTask extends AsyncTask<String, Void, Void> {
         mContext = context;
     }
 
-    private final String LOG_TAG = FetchMakulMhsTask.class.getSimpleName();
+    private final String LOG_TAG = FetchNilaiMhsTask.class.getSimpleName();
 
 
     private void getMakulDataFromJson(String nilaiJsonStr, String makulId)
@@ -102,7 +102,7 @@ public class FetchNilaiMhsTask extends AsyncTask<String, Void, Void> {
             mContext.getContentResolver().bulkInsert(ScoreContract.NilaiEntry.CONTENT_URI, cvArray);
             Log.v(LOG_TAG, "complete");
         }
-        NilaiMhsFragment.setRefreshState(false);
+        //NilaiMhsActivity.setRefreshState(false);
 
 
         //return resultStrs;

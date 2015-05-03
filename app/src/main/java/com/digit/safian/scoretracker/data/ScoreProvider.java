@@ -128,7 +128,7 @@ public class ScoreProvider extends ContentProvider {
         String judul_nilai = ScoreContract.NilaiEntry.getJudul(uri);
         return mOpenHelper.getReadableDatabase().query(
                 ScoreContract.NilaiEntry.TABLE_NAME,
-                projection,
+                null,
                 sNilaiAndMakul,
                 new String[]{id_makul, judul_nilai},
                 null,

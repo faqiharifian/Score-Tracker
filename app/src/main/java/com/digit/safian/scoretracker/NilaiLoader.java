@@ -25,19 +25,44 @@ public class NilaiLoader  extends AsyncTaskLoader<List<Cursor>>{
     public NilaiLoader(Context context, Cursor c){
         super(context);
         this.cursor = c;
+        Log.v("NilaiLoader", "created");
+        /*c.moveToFirst();
+        int k = 0;
+        while(!this.cursor.isAfterLast()){
+            for(int j=0; j<this.cursor.getColumnCount(); j++){
+                Log.v("record["+k+"], column[" + this.cursor.getColumnName(j) + "]", this.cursor.getString(j));
+            }
+            this.cursor.moveToNext();
+            ++k;
+        }*/
         mPm = getContext().getPackageManager();
     }
     @Override
     public List<Cursor> loadInBackground() {
         Log.v("nilai loader", "load background called");
         List<Cursor> entries = new ArrayList<Cursor>(this.cursor.getCount());
-        String makulId = this.cursor.getString(this.cursor.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_ID_MAKUL));
+
+        this.cursor.moveToFirst();
+        int k = 0;
+
         while(!this.cursor.isAfterLast()){
+            String makulId = this.cursor.getString(this.cursor.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_ID_MAKUL));
+            /*for(int j=0; j<this.cursor.getColumnCount(); j++){
+                Log.v("record["+k+"], column[" + j + "]", this.cursor.getString(j));
+            }*/
+            Uri uri = ScoreContract.NilaiEntry.buildNilaiMakulUri(makulId, this.cursor.getString(this.cursor.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_JUDUL)));
+            String[] projection = new String[]{ScoreContract.NilaiEntry.COLUMN_ID_MAKUL, ScoreContract.NilaiEntry.COLUMN_JUDUL};
+            Cursor c = getContext().getContentResolver().query(uri, null, null, null, null);
+            entries.add(c);
+            this.cursor.moveToNext();
+            ++k;
+        }
+        /*while(!this.cursor.isAfterLast()){
             Uri uri = ScoreContract.NilaiEntry.buildNilaiMakulUri(makulId, this.cursor.getString(this.cursor.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_JUDUL)));
             String[] projection = new String[]{ScoreContract.NilaiEntry.COLUMN_ID_MAKUL, ScoreContract.NilaiEntry.COLUMN_JUDUL};
             Cursor c = getContext().getContentResolver().query(uri, projection, null, null, null);
             entries.add(c);
-        }
+        }*/
         return entries;
     }
 

@@ -1,7 +1,8 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.digit.safian.scoretracker.NilaiMhsActivity.NilaiMhsFragment">
+    tools:context="com.digit.safian.scoretracker.NilaiMhsActivity.NilaiMhsFragment"
+    android:id="@+id/tabel_nilai">
     <TableRow
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/header"
@@ -18,7 +19,7 @@
             android:padding="3dp"/>
         <TextView
             android:id="@+id/uts"
-            android:text="Judul"
+            android:text="UTS"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -26,7 +27,7 @@
             android:padding="3dp"/>
         <TextView
             android:id="@+id/uas"
-            android:text="Nilai"
+            android:text="UAS"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
