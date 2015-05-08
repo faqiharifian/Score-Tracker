@@ -13,6 +13,8 @@
     <item android:id="@+id/action_share"
         android:title="@string/action_share"
         android:orderInCategory="100"
+        android:icon="@drawable/ic_action_share"
         app:showAsAction="always"
-        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"/>
+
+        />
 </menu>

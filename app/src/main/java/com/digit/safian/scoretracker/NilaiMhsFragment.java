@@ -10,7 +10,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TableLayout;
 
 import com.digit.safian.scoretracker.data.ScoreContract;
 
@@ -42,9 +40,17 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         //Log.v("NilaiMhsFragment", "created");
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        // Add this line in order for this fragment to handle menu events
+        setHasOptionsMenu(true);
+    }
+
     private void updateNilaiMhs(){
         //Log.v("update: ","called");
         setRefreshState(true);
+
         FetchNilaiMhsTask nilaiTask = new FetchNilaiMhsTask(getActivity());
         nilaiTask.execute(String.valueOf(makulId));
     }
@@ -57,19 +63,47 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        setRefreshState(false);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         optionsMenu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_nilai_mhs, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_share);
+        setRefreshState(true);
+        /*MenuItem menuItem = menu.findItem(R.id.action_share);
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
         if(mPath != null){
             mShareActionProvider.setShareIntent(createShareNilaiIntent());
-        }
+        }*/
     }
 
     private Intent createShareNilaiIntent(){
+
+        /*TableLayout tableMessage = (TableLayout) getActivity().findViewById(R.id.tabel_nilai);
+        Bitmap cs = null;
+        tableMessage.setDrawingCacheEnabled(true);
+        tableMessage.buildDrawingCache(true);
+        cs = Bitmap.createBitmap(tableMessage.getDrawingCache());
+        Canvas canvas = new Canvas(cs);
+        tableMessage.draw(canvas);*/
+        View theView = getView();
+        Bitmap b = null;
+        theView.setDrawingCacheEnabled(true);
+        theView.buildDrawingCache(true);
+        b = Bitmap.createBitmap(theView.getDrawingCache());
+        Canvas c = new Canvas(b);
+        theView.draw(c);
+        c.save();
+        theView.setDrawingCacheEnabled(false);
+        mPath = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), b,
+                "MyTableOutput", null);
+
+
         Uri uri = Uri.parse(mPath);
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
         sharingIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
@@ -78,6 +112,9 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         startActivity(Intent.createChooser(sharingIntent,
                 "Share image using"));
         //shareIntent.putExtra(Intent.EXTRA_TEXT);
+        if(mShareActionProvider != null){
+            mShareActionProvider.setShareIntent(createShareNilaiIntent());
+        }
         return sharingIntent;
     }
 
@@ -92,6 +129,8 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         if (id == R.id.action_refresh) {
             updateNilaiMhs();
             return true;
+        }else if(id == R.id.action_share){
+            createShareNilaiIntent();
         }
 
         return super.onOptionsItemSelected(item);
@@ -159,23 +198,8 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoadFinished(Loader<List<Cursor>> cursorLoader, List<Cursor> cursor) {
         //Log.v("onLoadFinished ", "called");
         mNilaiAdapter.setData(cursor);
-
         setRefreshState(false);
-        TableLayout tableMessage = (TableLayout) getActivity().findViewById(R.id.tabel_nilai);
-        Bitmap cs = null;
-        tableMessage.setDrawingCacheEnabled(true);
-        tableMessage.buildDrawingCache(true);
-        cs = Bitmap.createBitmap(tableMessage.getDrawingCache());
-        Canvas canvas = new Canvas(cs);
-        tableMessage.draw(canvas);
-        canvas.save();
-        tableMessage.setDrawingCacheEnabled(false);
-        mPath = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), cs,
-                "MyTableOutput", null);
 
-        if(mShareActionProvider != null){
-            mShareActionProvider.setShareIntent(createShareNilaiIntent());
-        }
     }
 
     @Override

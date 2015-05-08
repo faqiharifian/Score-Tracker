@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.digit.safian.scoretracker.data.ScoreContract;
+import com.digit.safian.scoretracker.service.MakulService;
 
 //import android.content.Loader;
 //import android.support.v4.content.Loader;
@@ -58,7 +59,6 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         int id = item.getItemId();
         if (id == com.digit.safian.scoretracker.R.id.action_refresh){
             updateMakulMhs();
-            setRefreshState(true);
             return true;
         }else if(id == R.id.action_settings){
             startActivity(new Intent(getActivity(), SettingsActivity.class));
@@ -84,7 +84,21 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateMakulMhs(){
-        FetchMakulMhsTask makulTask = new FetchMakulMhsTask(getActivity());
+        setRefreshState(true);
+        Intent intent = new Intent(getActivity(), MakulService.class);
+        int semesterInt = Integer.parseInt(mSemester);
+        intent.putExtra(MakulService.SEMESTER_QUERY_EXTRA, mSemester);
+        getActivity().startService(intent);
+        if(semesterInt % 2 == 0 && semesterInt >= 6){
+            Intent newIntent = new Intent(getActivity(), MakulService.class);
+            newIntent.putExtra(MakulService.SEMESTER_QUERY_EXTRA, "8");
+            getActivity().startService(newIntent);
+        }else if(semesterInt % 2 == 1 && semesterInt >= 5){
+            Intent newIntent = new Intent(getActivity(), MakulService.class);
+            newIntent.putExtra(MakulService.SEMESTER_QUERY_EXTRA, "7");
+            getActivity().startService(newIntent);
+        }
+        /*FetchMakulMhsTask makulTask = new FetchMakulMhsTask(getActivity());
         int semesterInt = Integer.parseInt(mSemester);
         makulTask.execute(mSemester);
         if(semesterInt % 2 == 0 && semesterInt >= 6){
@@ -93,7 +107,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         }else if(semesterInt % 2 == 1 && semesterInt >= 5){
             FetchMakulMhsTask newMakulTask = new FetchMakulMhsTask(getActivity());
             newMakulTask.execute("7");
-        }
+        }*/
     }
 
     void onLocationChanged( ) {
@@ -116,6 +130,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
             mSemester = semester;
             onLocationChanged();
         }
+        setRefreshState(false);
     }
 
     @Override
@@ -171,6 +186,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         mMakulAdapter.swapCursor(cursor);
+        setRefreshState(false);
     }
 
     @Override

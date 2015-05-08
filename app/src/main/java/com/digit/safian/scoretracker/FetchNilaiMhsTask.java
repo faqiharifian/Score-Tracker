@@ -25,7 +25,7 @@ import java.util.Vector;
 /**
  * Created by faqih_000 on 4/28/2015.
  */
-public class FetchNilaiMhsTask extends AsyncTask<String, Void, Void> {
+public class FetchNilaiMhsTask extends AsyncTask<String, Void, String[]> {
 
     private final Context mContext;
     public FetchNilaiMhsTask(Context context){
@@ -35,7 +35,7 @@ public class FetchNilaiMhsTask extends AsyncTask<String, Void, Void> {
     private final String LOG_TAG = FetchNilaiMhsTask.class.getSimpleName();
 
 
-    private void getMakulDataFromJson(String nilaiJsonStr, String makulId)
+    private String[] getMakulDataFromJson(String nilaiJsonStr, String makulId)
             throws JSONException {
         // These are the names of the JSON objects that need to be extracted.
         final String OWM_FEED = "feed";
@@ -106,10 +106,10 @@ public class FetchNilaiMhsTask extends AsyncTask<String, Void, Void> {
 
 
         //return resultStrs;
-
+        return new String[]{"complete"};
     }
     @Override
-    protected Void doInBackground(String... params){
+    protected String[] doInBackground(String... params){
         if (params.length == 0) {
             return null;
         }
@@ -176,12 +176,18 @@ public class FetchNilaiMhsTask extends AsyncTask<String, Void, Void> {
             }
         }
         try{
-            getMakulDataFromJson(nilaiJsonStr, makulIdQuery);
+            return getMakulDataFromJson(nilaiJsonStr, makulIdQuery);
             //return getMakulDataFromJson(nilaiJsonStr);
         }catch(JSONException e){
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(String[] result) {
+        NilaiMhsFragment.setRefreshState(false);
+
     }
 }

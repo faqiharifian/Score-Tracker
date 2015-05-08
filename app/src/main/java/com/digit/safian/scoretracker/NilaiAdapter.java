@@ -72,6 +72,13 @@ public class NilaiAdapter extends ArrayAdapter<Map<String, String>> {
         nameView.setText(item.get("nama"));
         utsView.setText(item.get("uts"));
         uasView.setText(item.get("uas"));
+        /*Bitmap b = null;
+        view.setDrawingCacheEnabled(true);
+        view.buildDrawingCache(true);
+        b = Bitmap.createBitmap(view.getDrawingCache());
+        Canvas c = new Canvas(b);
+        view.draw(c);
+        c.save();*/
         return view;
     }
     public Map<String, String> convertCursor(Cursor c){
