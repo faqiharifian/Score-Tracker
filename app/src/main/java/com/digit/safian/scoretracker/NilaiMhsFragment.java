@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.digit.safian.scoretracker.data.ScoreContract;
+import com.digit.safian.scoretracker.service.NilaiService;
 
 import java.util.List;
 
@@ -51,8 +52,9 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         //Log.v("update: ","called");
         setRefreshState(true);
 
-        FetchNilaiMhsTask nilaiTask = new FetchNilaiMhsTask(getActivity());
-        nilaiTask.execute(String.valueOf(makulId));
+        Intent intent = new Intent(getActivity(), NilaiService.class);
+        intent.putExtra(NilaiService.MAKUL_EXTRA, String.valueOf(makulId));
+        getActivity().startService(intent);
     }
 
     @Override

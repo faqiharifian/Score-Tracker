@@ -67,6 +67,7 @@
             android:label="@string/title_activity_about" >
         </activity>
         <service android:name=".service.MakulService"/>
+        <service android:name=".service.NilaiService"/>
     </application>
 
 </manifest>
