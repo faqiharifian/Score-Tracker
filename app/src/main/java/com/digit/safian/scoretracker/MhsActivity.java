@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 
+import com.digit.safian.scoretracker.sync.ScoreSyncAdapter;
+
 
 public class MhsActivity extends ActionBarActivity {
 
@@ -18,6 +20,7 @@ public class MhsActivity extends ActionBarActivity {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
         }else{
+            ScoreSyncAdapter.initializeSyncAdapter(this);
             setContentView(R.layout.activity_mhs);
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()

@@ -59,9 +59,9 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onStart(){
-
+        setRefreshState(true);
         super.onStart();
-        updateNilaiMhs();
+        //updateNilaiMhs();
     }
 
     @Override

@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.digit.safian.scoretracker.sync.ScoreSyncAdapter;
+
 import java.util.Date;
 
 
@@ -19,6 +21,8 @@ public class MainActivity extends ActionBarActivity {
     Boolean login = true;
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     protected void onCreate(Bundle savedInstanceState) {
+
+
         if(login == true){
             Intent intent = new Intent(MainActivity.this, MhsActivity.class);
             startActivity(intent);

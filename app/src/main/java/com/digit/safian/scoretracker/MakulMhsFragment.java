@@ -22,7 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.digit.safian.scoretracker.data.ScoreContract;
-import com.digit.safian.scoretracker.service.MakulService;
+import com.digit.safian.scoretracker.sync.ScoreSyncAdapter;
 
 //import android.content.Loader;
 //import android.support.v4.content.Loader;
@@ -85,7 +85,8 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
     private void updateMakulMhs(){
         setRefreshState(true);
-        Intent intent = new Intent(getActivity(), MakulService.class);
+        ScoreSyncAdapter.syncImmediately(getActivity());
+        /*Intent intent = new Intent(getActivity(), MakulService.class);
         int semesterInt = Integer.parseInt(mSemester);
         intent.putExtra(MakulService.SEMESTER_QUERY_EXTRA, mSemester);
         getActivity().startService(intent);
@@ -97,7 +98,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
             Intent newIntent = new Intent(getActivity(), MakulService.class);
             newIntent.putExtra(MakulService.SEMESTER_QUERY_EXTRA, "7");
             getActivity().startService(newIntent);
-        }
+        }*/
         /*FetchMakulMhsTask makulTask = new FetchMakulMhsTask(getActivity());
         int semesterInt = Integer.parseInt(mSemester);
         makulTask.execute(mSemester);
@@ -118,7 +119,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onStart(){
         super.onStart();
-        updateMakulMhs();
+        //updateMakulMhs();
     }
 
     @Override
