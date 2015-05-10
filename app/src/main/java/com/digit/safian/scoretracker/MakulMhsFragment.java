@@ -43,6 +43,13 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         mSemester = prefs.getString(getString(R.string.pref_semester_key), "");
         // Add this line in order for this fragment to handle menu events
         setHasOptionsMenu(true);
+        if(mSemester.equals("")){
+            Intent intent = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(intent);
+        }else{
+            ScoreSyncAdapter.initializeSyncAdapter(getActivity());
+            //updateMakulMhs();
+        }
     }
 
     @Override
@@ -111,27 +118,31 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         }*/
     }
 
-    void onLocationChanged( ) {
+    void onSemesterChanged() {
+        setRefreshState(true);
         updateMakulMhs();
         getLoaderManager().restartLoader(MAKUL_LOADER, null, this);
     }
 
     @Override
     public void onStart(){
+        Log.v("makul", "onstart");
         super.onStart();
+        setRefreshState(true);
         //updateMakulMhs();
     }
 
     @Override
     public void onResume(){
+        Log.v("makul", "onresume");
         super.onResume();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String semester = prefs.getString(getString(R.string.pref_semester_key), "");
         if (semester != null && !semester.equals(mSemester)) {
             mSemester = semester;
-            onLocationChanged();
+            onSemesterChanged();
         }
-        setRefreshState(false);
+        setRefreshState(true);
     }
 
     @Override

@@ -3,10 +3,12 @@ package com.digit.safian.scoretracker;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.digit.safian.scoretracker.data.ScoreContract;
@@ -43,6 +45,7 @@ public class NilaiAdapter extends ArrayAdapter<Map<String, String>> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         View view = mInflater.inflate(R.layout.container_table_content, parent, false);
+        TableRow header = (TableRow) view.findViewById(R.id.content);
         //String name = getItem(0).moveToPosition(position).getString(getItem(0).getColumnIndex(ScoreContract.NilaiEntry.COLUMN_MAHASISWA));
         /*TextView nameView = (TextView) view.findViewById(R.id.nama);
         TextView utsView = (TextView) view.findViewById(R.id.uts);
@@ -56,11 +59,26 @@ public class NilaiAdapter extends ArrayAdapter<Map<String, String>> {
                 uasView.setText(getItem(i).getString(getItem(i).getColumnIndex(ScoreContract.NilaiEntry.COLUMN_NILAI)));
             }
         }*/
-        TextView nameView = (TextView) view.findViewById(R.id.nama);
-        TextView utsView = (TextView) view.findViewById(R.id.uts);
-        TextView uasView = (TextView) view.findViewById(R.id.uas);
         Map<String, String> item = getItem(position);
         Set<String> keys = item.keySet();
+
+        TextView nameView = (TextView) view.findViewById(R.id.nama);
+        nameView.setText(item.get("nama"));
+
+        for(String key : keys){
+            if(!key.equals("nama")){
+                TextView tv = new TextView(getContext());
+                tv.setText(item.get(key));
+                tv.setGravity(Gravity.CENTER);
+
+                header.addView(tv);
+                tv.getLayoutParams().width = 50;
+                tv.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+            }
+        }
+        /*TextView utsView = (TextView) view.findViewById(R.id.uts);
+        TextView uasView = (TextView) view.findViewById(R.id.uas);*/
+
         /*for(String key : keys){
             Log.v(key, item.get(key));
         }*/
@@ -69,9 +87,9 @@ public class NilaiAdapter extends ArrayAdapter<Map<String, String>> {
         Log.v("view uas", getItem(position).get("uts"));*/
         //Log.v("---", "view-------------- ");
         //Log.v("getCount", String.valueOf(this.getCount()));
-        nameView.setText(item.get("nama"));
-        utsView.setText(item.get("uts"));
-        uasView.setText(item.get("uas"));
+
+        /*utsView.setText(item.get("uts"));
+        uasView.setText(item.get("uas"));*/
         /*Bitmap b = null;
         view.setDrawingCacheEnabled(true);
         view.buildDrawingCache(true);
@@ -90,7 +108,7 @@ public class NilaiAdapter extends ArrayAdapter<Map<String, String>> {
     }
 
 
-    public static class ViewHolder {
+    /*public static class ViewHolder {
         public final TextView nameView;
         public final TextView utsView;
         public final TextView uasView;
@@ -101,7 +119,7 @@ public class NilaiAdapter extends ArrayAdapter<Map<String, String>> {
             utsView = (TextView) view.findViewById(R.id.uts);
             uasView = (TextView) view.findViewById(R.id.uas);
         }
-    }
+    }*/
 
     public void setData(List<Cursor> data){
         clear();

@@ -129,7 +129,7 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
             }
             try {
 
-                makulIds = getMakulDataFromJson(makulJsonStr, semester);
+                makulIds.addAll(getMakulDataFromJson(makulJsonStr, semester));
                 //return getMakulDataFromJson(makulJsonStr);
             } catch (JSONException e) {
                 Log.e("Fetch", e.getMessage(), e);
@@ -210,6 +210,7 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
             }
         }
 
+        //MakulMhsFragment.setRefreshState(false);
         return;
 
     }

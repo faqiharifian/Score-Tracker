@@ -147,7 +147,7 @@ public class ScoreProvider extends ContentProvider {
                 new String[]{id_makul},
                 ScoreContract.NilaiEntry.COLUMN_JUDUL,
                 null,
-                null
+                sortOrder
         );
     }
 

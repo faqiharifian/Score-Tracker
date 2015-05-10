@@ -57,19 +57,14 @@ public class NilaiLoader  extends AsyncTaskLoader<List<Cursor>>{
             this.cursor.moveToNext();
             ++k;
         }
-        /*while(!this.cursor.isAfterLast()){
-            Uri uri = ScoreContract.NilaiEntry.buildNilaiMakulUri(makulId, this.cursor.getString(this.cursor.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_JUDUL)));
-            String[] projection = new String[]{ScoreContract.NilaiEntry.COLUMN_ID_MAKUL, ScoreContract.NilaiEntry.COLUMN_JUDUL};
-            Cursor c = getContext().getContentResolver().query(uri, projection, null, null, null);
-            entries.add(c);
-        }*/
+
         return entries;
     }
 
     @Override
     public void deliverResult(List<Cursor> nilai){
         if(isReset()){
-            if(nilai != null){
+            if(nilai.isEmpty()){
                 releaseResources(nilai);
                 return;
             }
@@ -102,9 +97,11 @@ public class NilaiLoader  extends AsyncTaskLoader<List<Cursor>>{
     }*/
         if(takeContentChanged()){
             forceLoad();
-        }else if(mNilai == null){
+        }else{
             forceLoad();
-        }
+        }/*else if(mNilai.isEmpty()){
+            forceLoad();
+        }*/
     }
 
     @Override
@@ -148,4 +145,6 @@ public class NilaiLoader  extends AsyncTaskLoader<List<Cursor>>{
             nilai.get(i).close();
         }
     }
+
+    //private List<Cursor> setCursor(){}
 }

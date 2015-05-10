@@ -11,6 +11,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,11 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.digit.safian.scoretracker.data.ScoreContract;
 import com.digit.safian.scoretracker.service.NilaiService;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -35,10 +41,14 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
     private static Menu optionsMenu;
     private String mPath;
     private ShareActionProvider mShareActionProvider;
+    private Set<String> header;
+    private Cursor c;
 
 
     public NilaiMhsFragment() {
         //Log.v("NilaiMhsFragment", "created");
+        header = new HashSet<>();
+
     }
 
     @Override
@@ -46,6 +56,7 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events
         setHasOptionsMenu(true);
+
     }
 
     private void updateNilaiMhs(){
@@ -155,7 +166,17 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
         //Cursor cur = getActivity().getContentResolver().query(nilaiUri, null, null, null, sortOrder);
 
+        Uri nilaiUri = ScoreContract.NilaiEntry.buildNilaiJudulUri(String.valueOf(makulId));
+        c = getActivity().getContentResolver().query(
+                nilaiUri,
+                new String[]{ScoreContract.NilaiEntry.COLUMN_ID_MAKUL, ScoreContract.NilaiEntry.COLUMN_JUDUL},
+                null,
+                null,
+                ScoreContract.NilaiEntry._ID
+        );
+
         mNilaiAdapter = new NilaiAdapter(getActivity());
+
 
         ListView listView = (ListView) rootView.findViewById(R.id.listview_nilai_mhs);
         listView.setAdapter(mNilaiAdapter);
@@ -163,11 +184,31 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         return rootView;
     }
 
+    public void setHeader(Cursor c){
+        View view = getView();
+        TableRow tableRow = (TableRow) view.findViewById(R.id.header);
 
+        c.moveToFirst();
+        while(!c.isAfterLast()){
+            Log.v("cursor judul", c.getString(c.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_JUDUL)));
+            //header.add(c.getString(c.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_JUDUL)));
+            TextView textView = new TextView(getActivity());
+            textView.setText(c.getString(c.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_JUDUL)));
+            textView.setGravity(Gravity.CENTER);
+            textView.setWidth(50);
+            tableRow.addView(textView);
+            c.moveToNext();
+        }
+
+        /*for(String head : header){
+
+        }*/
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         //Log.v("onActivityCreated", "called");
+        setHeader(c);
         getLoaderManager().initLoader(10, null, this);
         super.onActivityCreated(savedInstanceState);
     }
@@ -175,14 +216,7 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public Loader<List<Cursor>> onCreateLoader(int i, Bundle bundle) {
         //Log.v("onCreateLoader ", "called");
-        Uri nilaiUri = ScoreContract.NilaiEntry.buildNilaiJudulUri(String.valueOf(makulId));
-        Cursor c = getActivity().getContentResolver().query(
-                nilaiUri,
-                new String[]{ScoreContract.NilaiEntry._ID,ScoreContract.NilaiEntry.COLUMN_ID_MAKUL, ScoreContract.NilaiEntry.COLUMN_JUDUL},
-                null,
-                null,
-                ScoreContract.NilaiEntry._ID
-                );
+
         /*c.moveToFirst();
         int k = 0;
         while(!c.isAfterLast()){
@@ -192,7 +226,9 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
             c.moveToNext();
             ++k;
         }*/
-        return new NilaiLoader(getActivity(), c);
+        NilaiLoader nilaiLoader = new NilaiLoader(getActivity(), c);
+        //nilaiLoader.forceLoad();
+        return nilaiLoader;
         //return null;
     }
 

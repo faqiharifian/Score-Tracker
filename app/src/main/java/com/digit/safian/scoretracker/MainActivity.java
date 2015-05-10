@@ -12,8 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.digit.safian.scoretracker.sync.ScoreSyncAdapter;
-
 import java.util.Date;
 
 
