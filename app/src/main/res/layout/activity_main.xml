@@ -1,4 +1,90 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.digit.safian.scoretracker.FullscreenActivity"
+    android:measureAllChildren="false"
+    android:background="@drawable/background_main">
+
+    <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
+
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#64ffffff"></FrameLayout>
+
+    <TextView android:id="@+id/fullscreen_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:keepScreenOn="false"
+            android:textColor="#ff2144e5"
+            android:textStyle="bold"
+            android:textSize="32sp"
+            android:gravity="center"
+            android:text="@string/welcome"
+            android:singleLine="false"
+            android:paddingTop="50dp"
+            android:paddingBottom="50dp"
+            android:textColorHighlight="#ffffff" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MASUK"
+            android:id="@+id/masuk"
+            android:background="#ff2477ff"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/setting"
+            android:textColor="#ffffffff"
+            android:focusable="false"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Setting"
+            android:id="@+id/setting"
+            android:background="#ff2477ff"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/about"
+            android:layout_margin="25dp"
+            android:textColor="#ffffffff"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="About"
+            android:id="@+id/about"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="44dp"
+            android:background="#ff2477ff"
+            android:textColor="#ffffffff"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
+
+
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
+
+</RelativeLayout>
+<!--
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:id="@+id/container" android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -68,3 +154,4 @@
         android:layout_alignEnd="@+id/password" />
 
 </RelativeLayout>
+-->

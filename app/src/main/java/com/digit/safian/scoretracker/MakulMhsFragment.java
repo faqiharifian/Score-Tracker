@@ -43,13 +43,9 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         mSemester = prefs.getString(getString(R.string.pref_semester_key), "");
         // Add this line in order for this fragment to handle menu events
         setHasOptionsMenu(true);
-        if(mSemester.equals("")){
-            Intent intent = new Intent(getActivity(), SettingsActivity.class);
-            startActivity(intent);
-        }else{
-            ScoreSyncAdapter.initializeSyncAdapter(getActivity());
+
+        ScoreSyncAdapter.initializeSyncAdapter(getActivity());
             //updateMakulMhs();
-        }
     }
 
     @Override
@@ -70,10 +66,10 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         }else if(id == R.id.action_settings){
             startActivity(new Intent(getActivity(), SettingsActivity.class));
             return true;
-        }else if(id == R.id.action_about){
+        }/*else if(id == R.id.action_about){
             startActivity(new Intent(getActivity(), AboutActivity.class));
             return true;
-        }
+        }*/
         return super.onOptionsItemSelected(item);
     }
 

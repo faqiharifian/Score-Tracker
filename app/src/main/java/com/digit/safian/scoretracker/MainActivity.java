@@ -1,27 +1,57 @@
 package com.digit.safian.scoretracker;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import java.util.Date;
 
-
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
     Boolean login = true;
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
+        final Button masuk = (Button) findViewById(R.id.masuk);
+        masuk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                String semester = prefs.getString(getString(R.string.pref_semester_key), "");
+                if(semester.equals("")){
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                }else{
+                    Intent intent = new Intent(MainActivity.this, MhsActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
 
-        if(login == true){
+        final Button setting = (Button) findViewById(R.id.setting);
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        final Button about = (Button) findViewById(R.id.about);
+        about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        /*if(login == true){
             Intent intent = new Intent(MainActivity.this, MhsActivity.class);
             startActivity(intent);
         }
@@ -50,27 +80,27 @@ public class MainActivity extends ActionBarActivity {
                 }
 
             }
-        });
+        });*/
 
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        if(login == true){
+        /*if(login == true){
             Intent intent = new Intent(MainActivity.this, MhsActivity.class);
             startActivity(intent);
-        }
+        }*/
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -83,7 +113,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     public static class PlaceholderFragment extends Fragment{
         public PlaceholderFragment(){}
