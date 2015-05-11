@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -23,6 +24,17 @@ public class MainActivity extends Activity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSemester = prefs.getString(getString(R.string.pref_semester_key), "");
 
+        String mNotif = prefs.getString(getString(R.string.pref_notif_key), "");
+
+        /*String lastNotif = this.getString(R.string.pref_notif_key);
+        long lastSync = prefs.getLong(lastNotif, 0);
+        Log.v("notify", String.valueOf(lastSync));
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong(lastNotif, System.currentTimeMillis());
+        editor.commit();*/
+
+        Log.v(mSemester, mNotif);
         if(!mSemester.equals("")){
             ScoreSyncAdapter.initializeSyncAdapter(this);
         }
@@ -101,6 +113,7 @@ public class MainActivity extends Activity {
         String semester = prefs.getString(getString(R.string.pref_semester_key), "");
 
         if(!mSemester.equals(semester)){
+            Log.v("onResume", "change");
             mSemester = semester;
             ScoreSyncAdapter.initializeSyncAdapter(this);
         }
