@@ -44,7 +44,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         // Add this line in order for this fragment to handle menu events
         setHasOptionsMenu(true);
 
-        ScoreSyncAdapter.initializeSyncAdapter(getActivity());
+        //ScoreSyncAdapter.initializeSyncAdapter(getActivity());
             //updateMakulMhs();
     }
 

@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -41,7 +43,9 @@ import java.util.Vector;
 public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
     public final String LOG_TAG = ScoreSyncAdapter.class.getSimpleName();
 
-    public static final int SYNC_INTERVAL = 60 * 60 * 6;
+    /*public static final int SYNC_INTERVAL = 60 * 60 * 6;
+    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/6;*/
+    public static final int SYNC_INTERVAL = 60;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/6;
 
     public ScoreSyncAdapter(Context context, boolean autoInitialize) {
@@ -207,6 +211,8 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                     Log.e(LOG_TAG, e.getMessage(), e);
                     e.printStackTrace();
                 }
+
+
             }
         }
 
@@ -318,6 +324,9 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
     private void getNilaiDataFromJson(String nilaiJsonStr, String makulId)
             throws JSONException {
         // These are the names of the JSON objects that need to be extracted.
+
+        int countJudul = 0;
+
         final String OWM_FEED = "feed";
         final String OWM_ENTRIES = "entry";
         final String OWM_ID = "gsx$id";
@@ -350,6 +359,7 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
             }
             String mahasiswa = values.get("nama");
             values.remove("nama");
+            countJudul = values.size();
             for(String key : values.keySet()){
                 nilaiValues = new ContentValues();
                 /*Log.v(LOG_TAG, "start");
@@ -367,7 +377,6 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                 cVector.add(nilaiValues);
             }
 
-
         }
         if (cVector.size() > 0) {
             /*for(ContentValues i : cVector){
@@ -382,5 +391,27 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
             getContext().getContentResolver().bulkInsert(ScoreContract.NilaiEntry.CONTENT_URI, cvArray);
             Log.v("fetch nilai ", "complete "+makulId);
         }
+        notifyScore(makulId, countJudul);
+    }
+
+    private void notifyScore(String makulId, int countJudul){
+        Context context = getContext();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String lastNotifKey = context.getString(R.string.pref_last_notif);
+        long lastSync = prefs.getLong(lastNotifKey, 0);
+
+        Uri makulUri = ;
+
+        Cursor cursor = ;
+
+        if(cursor.moveToFirst()){
+            int count_judul = ;
+
+            if(countJudul != count_judul){
+
+            }
+        }
+
     }
 }

@@ -9,13 +9,23 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 
+import com.digit.safian.scoretracker.sync.ScoreSyncAdapter;
+
 
 public class MainActivity extends Activity {
+    private String mSemester;
     Boolean login = true;
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mSemester = prefs.getString(getString(R.string.pref_semester_key), "");
+
+        if(!mSemester.equals("")){
+            ScoreSyncAdapter.initializeSyncAdapter(this);
+        }
 
         final Button masuk = (Button) findViewById(R.id.masuk);
         masuk.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +97,13 @@ public class MainActivity extends Activity {
     @Override
     public void onResume(){
         super.onResume();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String semester = prefs.getString(getString(R.string.pref_semester_key), "");
+
+        if(!mSemester.equals(semester)){
+            mSemester = semester;
+            ScoreSyncAdapter.initializeSyncAdapter(this);
+        }
         /*if(login == true){
             Intent intent = new Intent(MainActivity.this, MhsActivity.class);
             startActivity(intent);
