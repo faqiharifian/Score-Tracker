@@ -2,11 +2,16 @@ package com.digit.safian.scoretracker.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.TargetApi;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
@@ -15,8 +20,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.digit.safian.scoretracker.MainActivity;
 import com.digit.safian.scoretracker.R;
 import com.digit.safian.scoretracker.data.ScoreContract;
 
@@ -377,7 +384,10 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                 cVector.add(nilaiValues);
             }
 
+
         }
+        notifyScore(makulId, countJudul);
+        Log.v(makulId, String.valueOf(countJudul));
         if (cVector.size() > 0) {
             /*for(ContentValues i : cVector){
                 for(String key : i.keySet()){
@@ -391,27 +401,82 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
             getContext().getContentResolver().bulkInsert(ScoreContract.NilaiEntry.CONTENT_URI, cvArray);
             Log.v("fetch nilai ", "complete "+makulId);
         }
-        notifyScore(makulId, countJudul);
+
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void notifyScore(String makulId, int countJudul){
+        Log.v("notify", makulId+": "+countJudul);
         Context context = getContext();
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        final int SCORE_NOTIFICATION_ID = 3005;
+        /*SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String lastNotifKey = context.getString(R.string.pref_last_notif);
-        long lastSync = prefs.getLong(lastNotifKey, 0);
+        long lastSync = prefs.getLong(lastNotifKey, 0);*/
 
-        Uri makulUri = ;
+        Uri makulUri = ScoreContract.MakulEntry.buildMakulByIdUri("0", makulId);
 
-        Cursor cursor = ;
+        Cursor cursor = context.getContentResolver().query(
+                makulUri,
+                null,
+                null,
+                null,
+                null
+        );
+        //Log.v();
 
         if(cursor.moveToFirst()){
-            int count_judul = ;
+            int count_judul = cursor.getInt(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_COUNT_JUDUL));
 
             if(countJudul != count_judul){
+                String makul = cursor.getString(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_NAMA_MAKUL));
+
+                String title = context.getString(R.string.app_name);
+
+                String contentText = String.format(context.getString(R.string.format_notification),
+                        makul);
+                Log.v("notify", contentText);
+
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
+                        //.setSmallIcon(getContext().getAssets(R.drawable.ic_launcher))
+                        .setContentTitle(title)
+                        .setContentText(contentText);
+
+                Intent resultIntent = new Intent(context, MainActivity.class);
+
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                stackBuilder.addNextIntent(resultIntent);
+                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+                mBuilder.setContentIntent(resultPendingIntent);
+
+                NotificationManager mNotificationManager =
+                        (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+                mNotificationManager.notify(SCORE_NOTIFICATION_ID, mBuilder.build());
 
             }
         }
+
+        cursor.close();
+
+        makulUri = ScoreContract.MakulEntry.CONTENT_URI;
+
+        ContentValues values = new ContentValues();
+
+        values.put(ScoreContract.MakulEntry.COLUMN_COUNT_JUDUL, countJudul);
+
+        String selection = ScoreContract.MakulEntry.TABLE_NAME +
+                "." + ScoreContract.MakulEntry.COLUMN_ID_MAKUL + " = ?";
+
+        context.getContentResolver().update(
+                makulUri,
+                values,
+                selection,
+                new String[]{makulId}
+        );
 
     }
 }

@@ -53,6 +53,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
                 MakulEntry.COLUMN_ID_MAKUL + " TEXT NOT NULL," +
                 MakulEntry.COLUMN_NAMA_MAKUL + " TEXT NOT NULL, "+
                 MakulEntry.COLUMN_SEMESTER + " TEXT NOT NULL, "+
+                MakulEntry.COLUMN_COUNT_JUDUL + " INTEGER, "+
                 " UNIQUE (" + MakulEntry.COLUMN_ID_MAKUL + ") ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_NILAI_TABLE = "CREATE TABLE " + NilaiEntry.TABLE_NAME + " (" +

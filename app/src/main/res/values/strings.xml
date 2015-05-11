@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
 
     <string name="app_name">Score Tracker</string>
     <string name="action_settings">Settings</string>
@@ -32,5 +32,6 @@
     <string name="content_authority">com.digit.safian.scoretracker</string>
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="welcome">WELCOME\nTO\nSCORETRACKER</string>
+    <string name="format_notification">Tracked: Nilai <xliff:g id="makul">%1$s</xliff:g> telah diupdate</string>
 
 </resources>

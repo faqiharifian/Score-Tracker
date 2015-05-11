@@ -32,6 +32,7 @@ public class ScoreProvider extends ContentProvider {
 
     static final int MAKUL = 100;
     static final int MAKUL_BY_SEMESTER = 101;
+    static final int MAKUL_BY_ID = 102;
     static final int NILAI_BY_MAKUL = 202;
     static final int NILAI_JUDUL = 201;
     static final int NILAI = 200;
@@ -71,6 +72,10 @@ public class ScoreProvider extends ContentProvider {
     private static final String sMakulBySemester =
             ScoreContract.MakulEntry.TABLE_NAME +
                     "." + ScoreContract.MakulEntry.COLUMN_SEMESTER + " = ?";
+
+    private static final String sMakulById =
+            ScoreContract.MakulEntry.TABLE_NAME +
+                    "." + ScoreContract.MakulEntry.COLUMN_ID_MAKUL + " = ?";
 
     private static final String sMakulBySemesterAkhir =
             ScoreContract.MakulEntry.TABLE_NAME +
@@ -123,6 +128,21 @@ public class ScoreProvider extends ContentProvider {
         }
 
     }
+
+    private Cursor getMakulById(Uri uri, String[] projection, String sortOrder){
+        String semester = ScoreContract.MakulEntry.getSemester(uri);
+        String id = ScoreContract.MakulEntry.getId(uri);
+        return mOpenHelper.getReadableDatabase().query(
+                ScoreContract.MakulEntry.TABLE_NAME,
+                null,
+                sMakulById,
+                new String[]{id},
+                null,
+                null,
+                sortOrder
+        );
+    }
+
     private Cursor getNilaiByMakul(Uri uri, String[] projection, String sortOrder){
         String id_makul = ScoreContract.NilaiEntry.getIdMakul(uri);
         String judul_nilai = ScoreContract.NilaiEntry.getJudul(uri);
@@ -175,6 +195,7 @@ public class ScoreProvider extends ContentProvider {
 
         matcher.addURI(authority, ScoreContract.PATH_MAKUL, MAKUL);
         matcher.addURI(authority, ScoreContract.PATH_MAKUL + "/*", MAKUL_BY_SEMESTER);
+        matcher.addURI(authority, ScoreContract.PATH_MAKUL + "/*/*", MAKUL_BY_ID);
 
         matcher.addURI(authority, ScoreContract.PATH_NILAI, NILAI);
         matcher.addURI(authority, ScoreContract.PATH_NILAI + "/*/*", NILAI_BY_MAKUL);
@@ -234,6 +255,11 @@ public class ScoreProvider extends ContentProvider {
             case MAKUL_BY_SEMESTER:
             {
                 retCursor = getMakulBySemester(uri, projection, sortOrder);
+                break;
+            }
+            case MAKUL_BY_ID:
+            {
+                retCursor = getMakulById(uri, projection, sortOrder);
                 break;
             }
             // "weather/*"
@@ -332,6 +358,7 @@ public class ScoreProvider extends ContentProvider {
                 rowsUpdated = db.update(ScoreContract.MakulEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
+
             case NILAI:
                 rowsUpdated = db.update(ScoreContract.NilaiEntry.TABLE_NAME, values, selection,
                         selectionArgs);

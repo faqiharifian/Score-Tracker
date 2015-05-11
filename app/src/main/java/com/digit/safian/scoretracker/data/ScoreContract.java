@@ -56,15 +56,23 @@ public class ScoreContract {
         public static final String COLUMN_ID_MAKUL = "id_makul";
         public static final String COLUMN_NAMA_MAKUL = "nama";
         public static final String COLUMN_SEMESTER = "semester";
+        public static final String COLUMN_COUNT_JUDUL = "count_judul";
 
         public static Uri buildMakulUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+        public static Uri buildMakulByIdUri(String semester, String id) {
+            return CONTENT_URI.buildUpon().appendPath(semester).appendPath(id).build();
         }
         public static Uri buildMakulWithSemesterUri(String semester) {
             return CONTENT_URI.buildUpon().appendPath(semester).build();
         }
         public static String getSemester(Uri uri){
             return uri.getPathSegments().get(1);
+        }
+
+        public static String getId(Uri uri){
+            return uri.getPathSegments().get(2);
         }
 
     }
