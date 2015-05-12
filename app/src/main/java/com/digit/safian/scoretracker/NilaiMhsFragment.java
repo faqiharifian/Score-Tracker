@@ -193,7 +193,7 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
             Log.v("cursor judul", c.getString(c.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_JUDUL)));
             //header.add(c.getString(c.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_JUDUL)));
             TextView textView = new TextView(getActivity());
-            textView.setText(c.getString(c.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_JUDUL)));
+            textView.setText(c.getString(c.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_JUDUL)).toUpperCase());
             textView.setGravity(Gravity.CENTER);
             textView.setWidth(50);
             tableRow.addView(textView);

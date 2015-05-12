@@ -381,57 +381,25 @@ public class ScoreProvider extends ContentProvider {
             case MAKUL: {
                 db.beginTransaction();
                 int returnCount = 0;
-                Cursor existingCursor = db.query(
-                        ScoreContract.MakulEntry.TABLE_NAME,
-                        new String[] {ScoreContract.MakulEntry._ID, ScoreContract.MakulEntry.COLUMN_ID_MAKUL},
-                        null, null, null, null,
-                        ScoreContract.MakulEntry.COLUMN_ID_MAKUL + " ASC"
-                );
                 try {
-
+                    long _id = -1;
                     for (ContentValues value : values) {
-                        long makulId = -1;
-                        long _id = -1;
-                        if(existingCursor != null){
-                            //Log.v(LOG_TAG, "existing");
-                            existingCursor.moveToFirst();
-                            while(existingCursor.isAfterLast() == false){
-
-                                String cursor_idMakul = existingCursor.getString(existingCursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_ID_MAKUL));
-                                String value_idMakul = value.getAsString(ScoreContract.MakulEntry.COLUMN_ID_MAKUL);
-                                /*Log.v(LOG_TAG, "checking");
-                                Log.v(LOG_TAG, "cursor.id_makul: "+cursor_idMakul);
-                                Log.v(LOG_TAG, "value.id_makul: "+value_idMakul);
-                                Log.v(LOG_TAG, "comparing: "+(cursor_idMakul.equals(value_idMakul)));*/
-                                if(cursor_idMakul.equals(value_idMakul)){
-                                    makulId = existingCursor.getLong(existingCursor.getColumnIndex(ScoreContract.MakulEntry._ID));
-                                    //Log.v(LOG_TAG, "exist");
-                                    break;
-                                }
-                                existingCursor.moveToNext();
-                            }
-                            //Log.v(LOG_TAG, "makulId: "+makulId);
-                            if(makulId != -1) {
-                                _id = db.update(
-                                        ScoreContract.MakulEntry.TABLE_NAME,
-                                        value,
-                                        ScoreContract.MakulEntry._ID + " = ?",
-                                        new String[]{String.valueOf(makulId)});
-                                //Log.v(LOG_TAG, "updated");
-                            }
-                        }
-                        if(makulId == -1){
+                        long makulId = value.getAsLong(ScoreContract.MakulEntry.COLUMN_ID_MAKUL);
+                        _id = db.update(
+                                ScoreContract.MakulEntry.TABLE_NAME,
+                                value,
+                                ScoreContract.MakulEntry.COLUMN_ID_MAKUL + " = ?",
+                                new String[]{String.valueOf(makulId)});
+                        if(_id <= 0){
                             _id = db.insert(ScoreContract.MakulEntry.TABLE_NAME, null, value);
-                            //Log.v(LOG_TAG, "inserted");
                         }
-                        if (_id != -1) {
+                        if (_id > 0) {
                             returnCount++;
                         }
 
                     }
                     db.setTransactionSuccessful();
                 } finally {
-                    existingCursor.close();
                     db.endTransaction();
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
@@ -441,9 +409,24 @@ public class ScoreProvider extends ContentProvider {
                 db.beginTransaction();
                 int returnCount = 0;
                 try {
+                    long _id = -1;
                     for (ContentValues value : values) {
-                        long _id = db.insert(ScoreContract.NilaiEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
+                        String id_makul = value.getAsString(ScoreContract.NilaiEntry.COLUMN_ID_MAKUL);
+                        String mhs = value.getAsString(ScoreContract.NilaiEntry.COLUMN_MAHASISWA);
+                        String judul = value.getAsString(ScoreContract.NilaiEntry.COLUMN_JUDUL);
+                        String selection =
+                                ScoreContract.NilaiEntry.COLUMN_ID_MAKUL + " = ? AND " +
+                                        ScoreContract.NilaiEntry.COLUMN_MAHASISWA + " = ? AND " +
+                                        ScoreContract.NilaiEntry.COLUMN_JUDUL + " = ?";
+                        _id = db.update(
+                                ScoreContract.NilaiEntry.TABLE_NAME,
+                                value,
+                                selection,
+                                new String[]{id_makul, mhs, judul});
+                        if(_id <= 0){
+                            _id = db.insert(ScoreContract.NilaiEntry.TABLE_NAME, null, value);
+                        }
+                        if (_id > 0) {
                             returnCount++;
                         }
                     }

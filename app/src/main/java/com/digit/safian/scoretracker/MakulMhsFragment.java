@@ -138,7 +138,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
             mSemester = semester;
             onSemesterChanged();
         }
-        setRefreshState(true);
+        //setRefreshState(true);
     }
 
     @Override

@@ -1,58 +1,96 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.digit.safian.scoretracker.AboutActivity">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.digit.safian.scoretracker.AboutActivity"
+    android:background="@drawable/background_main">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Thanks for Downloading"
-        android:id="@+id/textView"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:singleLine="false"
-        android:layout_marginTop="89dp"
-        android:textSize="12pt"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView android:text="“Score Tracker” is used to monitor score from lecturer in Computer Science, Diponegoro University. Collegers can see their score posted by their lecturer with this application."
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView2"
-        android:textAlignment="center"
-        android:textSize="10pt"
-        android:gravity="center"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Score Tracker"
-        android:id="@+id/textView4"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:singleLine="false"
-        android:textSize="12pt"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Thanks for Downloading"
+                android:id="@+id/textView"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:singleLine="false"
+                android:textSize="12pt"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Want to make your own version? Please contact us:\nfaqiharifianaji@gmail.com"
-        android:id="@+id/textView5"
-        android:singleLine="false"
-        android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="46dp" />
+            <ImageView
+                android:layout_width="119dp"
+                android:layout_height="119dp"
+                android:id="@+id/imageView"
+                android:layout_gravity="center"
+                android:src="@drawable/logo"
+                android:background="@drawable/logo" />
 
-</RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Score Tracker"
+                android:id="@+id/textView4"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:singleLine="false"
+                android:textSize="12pt"
+                android:layout_below="@+id/textView"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#96ffffff">
+
+            <TextView android:text="“Score Tracker” is used to monitor score from lecturer in Computer Science, Diponegoro University. Collegers can see their score posted by their lecturer with this application."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView2"
+                android:textAlignment="center"
+                android:textSize="10pt"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center"
+                android:layout_margin="25dp" />
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Want to make your own version? Please contact us:\nfaqiharifianaji@gmail.com"
+                    android:id="@+id/textView5"
+                    android:singleLine="false"
+                    android:gravity="center"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="50dp"
+                    android:layout_gravity="center|bottom" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -53,7 +53,7 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/6;*/
     public static final int SYNC_INTERVAL = 60;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/6;
-    private static final long DAY_IN_MILLIS = 1000 * 60;
+    //private static final long DAY_IN_MILLIS = 1000 * 60;
     final int SCORE_NOTIFICATION_ID = 3153;
 
     public ScoreSyncAdapter(Context context, boolean autoInitialize) {
@@ -140,8 +140,9 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                 }
             }
             try {
-
-                makulIds.addAll(getMakulDataFromJson(makulJsonStr, semester));
+                if(makulJsonStr != null) {
+                    makulIds.addAll(getMakulDataFromJson(makulJsonStr, semester));
+                }
                 //return getMakulDataFromJson(makulJsonStr);
             } catch (JSONException e) {
                 Log.e("Fetch", e.getMessage(), e);
@@ -213,7 +214,9 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                     }
                 }
                 try{
-                    getNilaiDataFromJson(nilaiJsonStr, makulId);
+                    if(nilaiJsonStr != null) {
+                        getNilaiDataFromJson(nilaiJsonStr, makulId);
+                    }
                     //return getMakulDataFromJson(nilaiJsonStr);
                 }catch(JSONException e){
                     Log.e(LOG_TAG, e.getMessage(), e);
@@ -354,14 +357,23 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
             Iterator<String> keys = iMakul.keys();
             ContentValues nilaiValues = null;
             Map<String, String> values = new HashMap<>();
+
+
             while (keys.hasNext()) {
                 String keyJson = keys.next();
                 String keyValue;
+
+                if(makulId.equals("45")){
+                    Log.v("key JSON", keyJson);
+                }
 
                 if (keyJson.split("\\$")[0].equals("gsx")) {
                     keyValue = keyJson.split("\\$")[1];
                     JSONObject contentJson = iMakul.getJSONObject(keyJson);
                     String content = contentJson.getString(OWM_CONTENT);
+                    if(makulId.equals("45")){
+                        Log.v(keyValue, content);
+                    }
                     values.put(keyValue, content);
                 }
             }
@@ -420,10 +432,9 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
             long lastSync = prefs.getLong(lastNotif, 0);
             Log.v("notify", String.valueOf(lastSync));
             Log.v("current", String.valueOf(System.currentTimeMillis()));
-            Log.v("day in millis", String.valueOf(DAY_IN_MILLIS));
             Log.v("diff", String.valueOf(System.currentTimeMillis() - lastSync));
 
-            if(System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS ) {
+            //if(System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS ) {
                 Log.v("inside", "if");
 
             /*SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -444,7 +455,7 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                 if (cursor.moveToFirst()) {
                     int count_judul = cursor.getInt(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_COUNT_JUDUL));
 
-                    //if (countJudul != count_judul) {
+                    if (countJudul != count_judul) {
                         String makul = cursor.getString(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_NAMA_MAKUL));
 
                         String title = context.getString(R.string.app_name);
@@ -478,7 +489,7 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putLong(lastNotif, System.currentTimeMillis());
                         editor.commit();
-                    //}
+                    }
                 }
 
                 cursor.close();
@@ -499,7 +510,7 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                         new String[]{makulId}
                 );
 
-            }
+            //}
         }
     }
 }

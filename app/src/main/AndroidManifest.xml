@@ -22,7 +22,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,7 +36,8 @@
         </activity>
         <activity
             android:name=".MhsActivity"
-            android:label="@string/title_activity_mhs" >
+            android:label="@string/title_activity_mhs"
+            android:screenOrientation="portrait">
 
             <!--
             <intent-filter>
@@ -55,7 +57,8 @@
         <activity
             android:name=".NilaiMhsActivity"
             android:label="@string/title_activity_nilai_mhs"
-            android:parentActivityName=".MhsActivity" >
+            android:parentActivityName=".MhsActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MhsActivity" />
@@ -63,14 +66,16 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MhsActivity" >
+            android:parentActivityName=".MhsActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MhsActivity" />
         </activity>
         <activity
             android:name=".AboutActivity"
-            android:label="@string/title_activity_about" >
+            android:label="@string/title_activity_about"
+            android:screenOrientation="portrait">
         </activity>
 
         <service android:name=".service.MakulService" />
