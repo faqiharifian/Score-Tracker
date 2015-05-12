@@ -2,8 +2,6 @@ package com.digit.safian.scoretracker;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 
 
 public class NilaiMhsActivity extends ActionBarActivity{
@@ -26,7 +24,7 @@ public class NilaiMhsActivity extends ActionBarActivity{
             fragment.setArguments(args);
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment, FragmentTag)
+                    .add(R.id.nilai_mhs_container, fragment, FragmentTag)
                     .commit();
         }
         //setContentView(new TableMainLayout(this));

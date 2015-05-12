@@ -51,8 +51,8 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
 
     /*public static final int SYNC_INTERVAL = 60 * 60 * 6;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/6;*/
-    public static final int SYNC_INTERVAL = 60;
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/6;
+    public static final int SYNC_INTERVAL = 60 * 30;
+    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
     //private static final long DAY_IN_MILLIS = 1000 * 60;
     final int SCORE_NOTIFICATION_ID = 3153;
 
@@ -77,12 +77,12 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
         }else if(semesterInt % 2 == 1 && semesterInt >= 5){
             arraySemester.add("7");
         }
-
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
         for(String semester : arraySemester) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
+
 
 
             // Will contain the raw JSON response as a string.
@@ -155,8 +155,8 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
 
                 // These two need to be declared outside the try/catch
                 // so that they can be closed in the finally block.
-                HttpURLConnection urlConnection = null;
-                BufferedReader reader = null;
+                urlConnection = null;
+                reader = null;
 
                 // Will contain the raw JSON response as a string.
                 String nilaiJsonStr = null;
