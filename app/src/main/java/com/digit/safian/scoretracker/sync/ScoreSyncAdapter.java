@@ -465,7 +465,7 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                         Log.v("notify", contentText);
 
                         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
-                                .setSmallIcon(R.drawable.ic_launcher)
+                                .setSmallIcon(R.drawable.ic_stat)
                                 .setSmallIcon(R.drawable.ic_launcher)
                                 .setContentTitle(title)
                                 .setContentText(contentText);
