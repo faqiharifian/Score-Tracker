@@ -4,7 +4,8 @@
     android:id="@+id/nilai_mhs_container"
     tools:context="com.digit.safian.scoretracker.NilaiMhsActivity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="MergeRootFrame"/>
 
     <!--<TableRow
         android:id="@+id/header"
@@ -21,4 +22,3 @@
 
         </TableLayout>
     </ScrollView>-->
-</FrameLayout>

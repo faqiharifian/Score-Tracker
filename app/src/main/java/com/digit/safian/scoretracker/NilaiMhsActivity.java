@@ -10,7 +10,7 @@ public class NilaiMhsActivity extends ActionBarActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        long makulId = getIntent().getExtras().getLong("makulId");
+        //long makulId = getIntent().getExtras().getLong("makulId");
         String title = getIntent().getExtras().getString("title");
         setTitle(title);
         super.onCreate(savedInstanceState);
@@ -18,13 +18,13 @@ public class NilaiMhsActivity extends ActionBarActivity{
         //getActionBar().setDisplayHomeAsUpEnabled(true);
         if (savedInstanceState == null) {
 
-            Bundle args = new Bundle();
-            args.putLong("makulId", makulId);
-            NilaiMhsFragment fragment = new NilaiMhsFragment();
-            fragment.setArguments(args);
+            //Bundle args = new Bundle();
+            //args.putLong("makulId", makulId);
+            //NilaiMhsFragment fragment = new NilaiMhsFragment();
+            //fragment.setArguments(args);
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.nilai_mhs_container, fragment, FragmentTag)
+                    .add(R.id.nilai_mhs_container, new NilaiMhsFragment())
                     .commit();
         }
         //setContentView(new TableMainLayout(this));

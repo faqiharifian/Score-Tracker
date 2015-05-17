@@ -155,11 +155,11 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         View rootView = inflater.inflate(R.layout.fragment_nilai_mhs, container, false);
         //Log.v("CreateView", "called");
 
-
-        Bundle bundle = getArguments();
+        makulId = getActivity().getIntent().getExtras().getLong("makulId");
+        /*Bundle bundle = getArguments();
         if(bundle != null) {
             makulId = bundle.getLong("makulId");
-        }
+        }*/
         //Log.v("makulId", String.valueOf(makulId));
 
         //Uri nilaiUri = ScoreContract.NilaiEntry.buildNilaiUri(makulId);

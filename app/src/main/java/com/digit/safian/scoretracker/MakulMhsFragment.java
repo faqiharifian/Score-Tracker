@@ -30,7 +30,7 @@ import com.digit.safian.scoretracker.sync.ScoreSyncAdapter;
 public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final int MAKUL_LOADER = 0;
     private MakulAdapter mMakulAdapter;
-    private String mSemester;
+
     private static Menu optionsMenu;
 
     public MakulMhsFragment() {
@@ -39,8 +39,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mSemester = prefs.getString(getString(R.string.pref_semester_key), "");
+
         // Add this line in order for this fragment to handle menu events
         setHasOptionsMenu(true);
 
@@ -129,19 +128,6 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
-    public void onResume(){
-        Log.v("makul", "onresume");
-        super.onResume();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String semester = prefs.getString(getString(R.string.pref_semester_key), "");
-        if (semester != null && !semester.equals(mSemester)) {
-            mSemester = semester;
-            onSemesterChanged();
-        }
-        //setRefreshState(true);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_mhs, container, false);
@@ -179,8 +165,9 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
     }
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-
-        Uri makulUri = ScoreContract.MakulEntry.buildMakulWithSemesterUri(mSemester);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String semester = prefs.getString(getActivity().getString(R.string.pref_semester_key), "");
+        Uri makulUri = ScoreContract.MakulEntry.buildMakulWithSemesterUri(semester);
         return new CursorLoader(
                 getActivity(),
                 makulUri,
