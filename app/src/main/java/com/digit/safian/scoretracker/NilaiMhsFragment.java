@@ -35,6 +35,7 @@ import java.util.Set;
  * Created by faqih_000 on 4/28/2015.
  */
 public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Cursor>>{
+    static final String NILAI_URI = "URI";
     private static final int NILAI_LOADER = 1;
     private NilaiAdapter mNilaiAdapter;
     long makulId = -1;
@@ -44,11 +45,53 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
     private Set<String> header;
     private Cursor c;
 
+    private Uri mUri;
+
 
     public NilaiMhsFragment() {
         //Log.v("NilaiMhsFragment", "created");
         header = new HashSet<>();
 
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_nilai_mhs, container, false);
+        //Log.v("CreateView", "called");
+
+        Bundle args = getArguments();
+        if(args != null){
+            mUri = args.getParcelable(NILAI_URI);
+        }
+        makulId = getActivity().getIntent().getExtras().getLong("makulId");
+        /*Bundle bundle = getArguments();
+        if(bundle != null) {
+            makulId = bundle.getLong("makulId");
+        }*/
+        //Log.v("makulId", String.valueOf(makulId));
+
+        //Uri nilaiUri = ScoreContract.NilaiEntry.buildNilaiUri(makulId);
+
+        //Cursor cur = getActivity().getContentResolver().query(nilaiUri, null, null, null, sortOrder);
+
+        //Uri nilaiUri = ScoreContract.NilaiEntry.buildNilaiJudulUri(String.valueOf(makulId));
+        c = getActivity().getContentResolver().query(
+                //nilaiUri,
+                mUri,
+                new String[]{ScoreContract.NilaiEntry.COLUMN_ID_MAKUL, ScoreContract.NilaiEntry.COLUMN_JUDUL},
+                null,
+                null,
+                ScoreContract.NilaiEntry._ID
+        );
+
+        mNilaiAdapter = new NilaiAdapter(getActivity());
+
+
+        ListView listView = (ListView) rootView.findViewById(R.id.listview_nilai_mhs);
+        listView.setAdapter(mNilaiAdapter);
+
+        return rootView;
     }
 
     @Override
@@ -95,42 +138,6 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         }*/
     }
 
-    private Intent createShareNilaiIntent(){
-
-        /*TableLayout tableMessage = (TableLayout) getActivity().findViewById(R.id.tabel_nilai);
-        Bitmap cs = null;
-        tableMessage.setDrawingCacheEnabled(true);
-        tableMessage.buildDrawingCache(true);
-        cs = Bitmap.createBitmap(tableMessage.getDrawingCache());
-        Canvas canvas = new Canvas(cs);
-        tableMessage.draw(canvas);*/
-        View theView = getView();
-        Bitmap b = null;
-        theView.setDrawingCacheEnabled(true);
-        theView.buildDrawingCache(true);
-        b = Bitmap.createBitmap(theView.getDrawingCache());
-        Canvas c = new Canvas(b);
-        theView.draw(c);
-        c.save();
-        theView.setDrawingCacheEnabled(false);
-        mPath = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), b,
-                "MyTableOutput", null);
-
-
-        Uri uri = Uri.parse(mPath);
-        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-        sharingIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        sharingIntent.setType("image/png");
-        sharingIntent.putExtra(Intent.EXTRA_STREAM, uri);
-        startActivity(Intent.createChooser(sharingIntent,
-                "Share image using"));
-        //shareIntent.putExtra(Intent.EXTRA_TEXT);
-        if(mShareActionProvider != null){
-            mShareActionProvider.setShareIntent(createShareNilaiIntent());
-        }
-        return sharingIntent;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -149,40 +156,7 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_nilai_mhs, container, false);
-        //Log.v("CreateView", "called");
 
-        makulId = getActivity().getIntent().getExtras().getLong("makulId");
-        /*Bundle bundle = getArguments();
-        if(bundle != null) {
-            makulId = bundle.getLong("makulId");
-        }*/
-        //Log.v("makulId", String.valueOf(makulId));
-
-        //Uri nilaiUri = ScoreContract.NilaiEntry.buildNilaiUri(makulId);
-
-        //Cursor cur = getActivity().getContentResolver().query(nilaiUri, null, null, null, sortOrder);
-
-        Uri nilaiUri = ScoreContract.NilaiEntry.buildNilaiJudulUri(String.valueOf(makulId));
-        c = getActivity().getContentResolver().query(
-                nilaiUri,
-                new String[]{ScoreContract.NilaiEntry.COLUMN_ID_MAKUL, ScoreContract.NilaiEntry.COLUMN_JUDUL},
-                null,
-                null,
-                ScoreContract.NilaiEntry._ID
-        );
-
-        mNilaiAdapter = new NilaiAdapter(getActivity());
-
-
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_nilai_mhs);
-        listView.setAdapter(mNilaiAdapter);
-
-        return rootView;
-    }
 
     public void setHeader(Cursor c){
         View view = getView();
@@ -257,6 +231,42 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
                 }
             }
         }
+    }
+
+    private Intent createShareNilaiIntent(){
+
+        /*TableLayout tableMessage = (TableLayout) getActivity().findViewById(R.id.tabel_nilai);
+        Bitmap cs = null;
+        tableMessage.setDrawingCacheEnabled(true);
+        tableMessage.buildDrawingCache(true);
+        cs = Bitmap.createBitmap(tableMessage.getDrawingCache());
+        Canvas canvas = new Canvas(cs);
+        tableMessage.draw(canvas);*/
+        View theView = getView();
+        Bitmap b = null;
+        theView.setDrawingCacheEnabled(true);
+        theView.buildDrawingCache(true);
+        b = Bitmap.createBitmap(theView.getDrawingCache());
+        Canvas c = new Canvas(b);
+        theView.draw(c);
+        c.save();
+        theView.setDrawingCacheEnabled(false);
+        mPath = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), b,
+                "MyTableOutput", null);
+
+
+        Uri uri = Uri.parse(mPath);
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        sharingIntent.setType("image/png");
+        sharingIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivity(Intent.createChooser(sharingIntent,
+                "Share image using"));
+        //shareIntent.putExtra(Intent.EXTRA_TEXT);
+        if(mShareActionProvider != null){
+            mShareActionProvider.setShareIntent(createShareNilaiIntent());
+        }
+        return sharingIntent;
     }
 
 }

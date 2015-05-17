@@ -1,12 +1,18 @@
 package com.digit.safian.scoretracker;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import com.digit.safian.scoretracker.sync.ScoreSyncAdapter;
 
 
-public class MhsActivity extends ActionBarActivity {
+public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.Callback{
     private final String NILAIFRAGMENT_TAG = "NFTAG";
 
     private boolean mTwoPane;
@@ -28,7 +34,11 @@ public class MhsActivity extends ActionBarActivity {
             }
         }else{
             mTwoPane = false;
+            getSupportActionBar().setElevation(0f);
         }
+
+        MakulMhsFragment makulFragment = ((MakulMhsFragment)getSupportFragmentManager()
+            .findFragmentById(R.id.fragment_makul));
 
             /*setContentView(R.layout.activity_mhs);
             if (savedInstanceState == null) {
@@ -37,7 +47,35 @@ public class MhsActivity extends ActionBarActivity {
                         .commit();
             }*/
 
+        if(mSemester != ""){
+            ScoreSyncAdapter.initializeSyncAdapter(this);
+        }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_mhs,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        // Handle action bar Item clicks here, the action bar will
+        // automatically handle clicks on the Home/up button, so long
+        // as you specify a parent activity in AndroidManifest.xml
+        int id = item.getItemId();
+        if (id == com.digit.safian.scoretracker.R.id.action_refresh){
+            updateMakulMhs();
+            return true;
+        }else if(id == R.id.action_settings){
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }/*else if(id == R.id.action_about){
+            startActivity(new Intent(getActivity(), AboutActivity.class));
+            return true;
+        }*/
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -46,31 +84,41 @@ public class MhsActivity extends ActionBarActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String semester = prefs.getString(getString(R.string.pref_semester_key), "");
 
-        if(semester != null){
+        if(semester != null && !semester.equals(mSemester)){
             MakulMhsFragment makul = (MakulMhsFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_makul);
-            if(null != makul && !semester.equals(mSemester)){
+            if(null != makul){
                 makul.onSemesterChanged();
             }
+            NilaiMhsFragment nilai = (NilaiMhsFragment)getSupportFragmentManager().findFragmentByTag(NILAIFRAGMENT_TAG);
+            if(null != nilai){
+                //nilai.
+            }
+            mSemester = semester;
         }
     }
 
-    /*public void onResume() {
-        super.onResume();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String semester = prefs.getString(getString(R.string.pref_semester_key), "");
-        if(semester.equals("")){
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
+    @Override
+    public void onItemSelected(Uri contentUri){
+        if(mTwoPane){
+            Bundle args = new Bundle();
+            args.putParcelable(NilaiMhsFragment.NILAI_URI, contentUri);
+
+            NilaiMhsFragment fragment = new NilaiMhsFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.nilai_mhs_container, fragment, NILAIFRAGMENT_TAG)
+                    .commit();
         }else{
-            ScoreSyncAdapter.initializeSyncAdapter(this);
-            setContentView(R.layout.activity_mhs);
-
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, new MakulMhsFragment())
-                        .commit();
-
+            Intent intent = new Intent(this, NilaiMhsActivity.class)
+                    .setData(contentUri);
+            startActivity(intent);
         }
-    }*/
+    }
 
 
+    private void updateMakulMhs(){
+        ScoreSyncAdapter.syncImmediately(this);
+
+    }
 }
