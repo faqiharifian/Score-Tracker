@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SettingsTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
+        <item name="colorPrimary">@color/score_blue</item>
+        <item name="colorPrimaryDark">@color/score_dark_blue</item>
+    </style>
+
+
+</resources>
