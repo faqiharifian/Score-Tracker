@@ -4,6 +4,7 @@
         <item name="android:actionBarStyle">@style/ActionBar.v14.Score.NoTitle</item>
     </style>
 
+
     <style name="ActionBar.v14.Score.NoTitle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/score_blue</item>
         <item name="android:height">56dp</item>

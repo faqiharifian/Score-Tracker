@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -160,14 +161,17 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
     public void setHeader(Cursor c){
         final float scale = getActivity().getResources().getDisplayMetrics().density;
 
+        Typeface face = Typeface.create("sans-serif-condensed", Typeface.NORMAL);
+
         View view = getView();
         TableRow tableRow = (TableRow) view.findViewById(R.id.header);
 
         TextView namaView = new TextView(getActivity());
         namaView.setText("NAMA");
         namaView.setGravity(Gravity.CENTER);
-        namaView.setWidth((int) (150*scale));
+        namaView.setWidth((int) (150 * scale));
         namaView.setTextColor(Color.WHITE);
+        namaView.setTypeface(face);
         tableRow.addView(namaView);
 
         c.moveToFirst();
@@ -179,7 +183,9 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
             textView.setGravity(Gravity.CENTER);
             textView.setWidth((int) (75*scale));
             textView.setTextColor(Color.WHITE);
+            textView.setTypeface(face);
             tableRow.addView(textView);
+
             c.moveToNext();
         }
 

@@ -7,6 +7,9 @@
     android:gravity="center|left"
     android:background="@drawable/touch_selector"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin">
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:fontFamily="sans-serif-condensed"
+    android:textSize="16sp"
+    android:textColor="@drawable/touch_text">
 
 </TextView>
