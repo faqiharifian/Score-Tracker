@@ -4,9 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.v4.app.TaskStackBuilder;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
@@ -17,12 +14,14 @@ import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
+import android.support.v4.app.TaskStackBuilder;
 
 import com.digit.safian.scoretracker.MainActivity;
 import com.digit.safian.scoretracker.R;
@@ -49,14 +48,11 @@ import java.util.Vector;
  * Created by faqih_000 on 5/9/2015.
  */
 public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
-    public final String LOG_TAG = ScoreSyncAdapter.class.getSimpleName();
 
-    /*public static final int SYNC_INTERVAL = 60 * 60 * 6;
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/6;*/
-    public static final int SYNC_INTERVAL = 60 * 60 * 12;
+    public static final int SYNC_INTERVAL = 60;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/12;
-    //private static final long DAY_IN_MILLIS = 1000 * 60;
     final int SCORE_NOTIFICATION_ID = 3153;
+    final String NOTIFICATION_GROUP = "score_notification_group";
 
     public ScoreSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
@@ -82,18 +78,12 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         for(String semester : arraySemester) {
-            // These two need to be declared outside the try/catch
-            // so that they can be closed in the finally block.
-
-
 
             // Will contain the raw JSON response as a string.
             String makulJsonStr = null;
 
             try {
-                // Construct the URL for the OpenWeatherMap query
-                // Possible parameters are avaiable at OWM's forecast API page, at
-                // http://openweathermap.org/API#forecast
+                // URL from google sheet
                 URL url = new URL("https://spreadsheets.google.com/feeds/list/1H9Y7zJJ8oUCfoZ9qC07TcnujunnU7OxL0yr9OMEPE64/" + semester + "/public/values?alt=json");
 
                 // Create the request to OpenWeatherMap, and open the connection
@@ -126,7 +116,6 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                 //Log.v(LOG_TAG, makulJsonStr);
 
             } catch (IOException e) {
-                Log.e("Fetch", "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
                 // to parse it.
             } finally {
@@ -137,7 +126,6 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                     try {
                         reader.close();
                     } catch (final IOException e) {
-                        Log.e("Fetch", "Error closing stream", e);
                     }
                 }
             }
@@ -147,7 +135,6 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                 }
                 //return getMakulDataFromJson(makulJsonStr);
             } catch (JSONException e) {
-                Log.e("Fetch", e.getMessage(), e);
                 e.printStackTrace();
             }
         }
@@ -196,10 +183,8 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                         return;
                     }
                     nilaiJsonStr = buffer.toString();
-                    Log.v(LOG_TAG, nilaiJsonStr);
 
                 } catch (IOException e) {
-                    Log.e(LOG_TAG, "Error ", e);
                     // If the code didn't successfully get the weather data, there's no point in attemping
                     // to parse it.
                     return;
@@ -211,7 +196,6 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                         try {
                             reader.close();
                         } catch (final IOException e) {
-                            Log.e(LOG_TAG, "Error closing stream", e);
                         }
                     }
                 }
@@ -221,7 +205,6 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                     }
                     //return getMakulDataFromJson(nilaiJsonStr);
                 }catch(JSONException e){
-                    Log.e(LOG_TAG, e.getMessage(), e);
                     e.printStackTrace();
                 }
 
@@ -229,7 +212,6 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
             }
         }
 
-        //MakulMhsFragment.setRefreshState(false);
         return;
 
     }
@@ -261,14 +243,12 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
         Account account = getSyncAccount(context);
         String authority = context.getString(R.string.content_authority);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            Log.v("config", "kitkat");
             SyncRequest request = new SyncRequest.Builder()
                     .syncPeriodic(syncInterval, flexTime)
                     .setSyncAdapter(account, authority)
                     .setExtras(new Bundle()).build();
             ContentResolver.requestSync(request);
         }else{
-            Log.v("config", "else");
             ContentResolver.addPeriodicSync(account, authority, new Bundle(), syncInterval);
         }
     }
@@ -328,7 +308,6 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
             cVVector.toArray(cvArray);
 
             getContext().getContentResolver().bulkInsert(ScoreContract.MakulEntry.CONTENT_URI, cvArray);
-            Log.v("makul sync", "complete "+semester);
         }
 
         return makulIds;
@@ -342,8 +321,6 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
 
         final String OWM_FEED = "feed";
         final String OWM_ENTRIES = "entry";
-        final String OWM_ID = "gsx$id";
-        final String OWM_NAME = "gsx$name";
         final String OWM_CONTENT = "$t";
 
         JSONObject nilaiJson = new JSONObject(nilaiJsonStr);
@@ -365,16 +342,11 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                 String keyJson = keys.next();
                 String keyValue;
 
-                if(makulId.equals("45")){
-                    Log.v("key JSON", keyJson);
-                }
-
                 if (keyJson.split("\\$")[0].equals("gsx")) {
                     keyValue = keyJson.split("\\$")[1];
                     JSONObject contentJson = iMakul.getJSONObject(keyJson);
                     String content = contentJson.getString(OWM_CONTENT);
                     if(makulId.equals("45")){
-                        Log.v(keyValue, content);
                     }
                     values.put(keyValue, content);
                 }
@@ -384,12 +356,6 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
             countJudul = values.size();
             for(String key : values.keySet()){
                 nilaiValues = new ContentValues();
-                /*Log.v(LOG_TAG, "start");
-                Log.v(LOG_TAG, ScoreContract.NilaiEntry.COLUMN_ID_MAKUL +" = "+ makulId);
-                Log.v(LOG_TAG, ScoreContract.NilaiEntry.COLUMN_MAHASISWA +" = "+ mahasiswa);
-                Log.v(LOG_TAG, ScoreContract.NilaiEntry.COLUMN_JUDUL +" = "+ key);
-                Log.v(LOG_TAG, ScoreContract.NilaiEntry.COLUMN_NILAI +" = "+ values.get(key));
-                Log.v(LOG_TAG, "================NEXT==============");*/
 
                 nilaiValues.put(ScoreContract.NilaiEntry.COLUMN_ID_MAKUL, makulId);
                 nilaiValues.put(ScoreContract.NilaiEntry.COLUMN_MAHASISWA, mahasiswa);
@@ -402,25 +368,16 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
 
         }
         notifyScore(makulId, countJudul);
-        Log.v(makulId, String.valueOf(countJudul));
         if (cVector.size() > 0) {
-            /*for(ContentValues i : cVector){
-                for(String key : i.keySet()){
-                    Log.v(LOG_TAG, key +" = "+ i.getAsString(key));
-                }
-                Log.v(LOG_TAG, "================NEXT==============");
-            }*/
             ContentValues[] cvArray = new ContentValues[cVector.size()];
             cVector.toArray(cvArray);
 
             getContext().getContentResolver().bulkInsert(ScoreContract.NilaiEntry.CONTENT_URI, cvArray);
-            Log.v("fetch nilai ", "complete "+makulId);
         }
 
     }
 
     private void notifyScore(String makulId, int countJudul){
-        Log.v("notify", makulId+": "+countJudul);
         Context context = getContext();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -430,84 +387,74 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
 
         if(mNotif.equals("on")) {
 
+            Uri makulUri = ScoreContract.MakulEntry.buildMakulByIdUri("0", makulId);
 
-            //if(System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS ) {
-                Log.v("inside", "if");
+            Cursor cursor = context.getContentResolver().query(
+                    makulUri,
+                    null,
+                    null,
+                    null,
+                    null
+            );
 
-            /*SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            String lastNotifKey = context.getString(R.string.pref_last_notif);
-            long lastSync = prefs.getLong(lastNotifKey, 0);*/
+            if (cursor.moveToFirst()) {
+                int count_judul = cursor.getInt(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_COUNT_JUDUL));
 
-                Uri makulUri = ScoreContract.MakulEntry.buildMakulByIdUri("0", makulId);
+                if (countJudul != count_judul) {
+                    String makul = cursor.getString(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_NAMA_MAKUL));
 
-                Cursor cursor = context.getContentResolver().query(
-                        makulUri,
-                        null,
-                        null,
-                        null,
-                        null
-                );
-                Log.v("cursor size", String.valueOf(cursor.getCount()));
+                    String title = context.getString(R.string.app_name);
 
-                if (cursor.moveToFirst()) {
-                    int count_judul = cursor.getInt(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_COUNT_JUDUL));
+                    String contentText = String.format(context.getString(R.string.format_notification),
+                            makul);
 
-                    if (countJudul != count_judul) {
-                        String makul = cursor.getString(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_NAMA_MAKUL));
+                    Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_notif);
 
-                        String title = context.getString(R.string.app_name);
+                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
+                            .setSmallIcon(R.drawable.ic_stat)
+                            .setLargeIcon(largeIcon)
+                            .setContentTitle(title)
+                            .setContentText(contentText)
+                            .setGroup(NOTIFICATION_GROUP);
 
-                        String contentText = String.format(context.getString(R.string.format_notification),
-                                makul);
-                        Log.v("notify", contentText);
+                    Intent resultIntent = new Intent(context, MainActivity.class);
 
-                        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_notif);
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                    stackBuilder.addNextIntent(resultIntent);
+                    PendingIntent resultPendingIntent =
+                            stackBuilder.getPendingIntent(
+                                    0,
+                                    PendingIntent.FLAG_UPDATE_CURRENT
+                            );
+                    mBuilder.setContentIntent(resultPendingIntent);
 
-                        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
-                                .setSmallIcon(R.drawable.ic_stat)
-                                .setLargeIcon(largeIcon)
-                                .setContentTitle(title)
-                                .setContentText(contentText);
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-                        Intent resultIntent = new Intent(context, MainActivity.class);
-
-                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-                        stackBuilder.addNextIntent(resultIntent);
-                        PendingIntent resultPendingIntent =
-                                stackBuilder.getPendingIntent(
-                                        0,
-                                        PendingIntent.FLAG_UPDATE_CURRENT
-                                );
-                        mBuilder.setContentIntent(resultPendingIntent);
-
-                        NotificationManager mNotificationManager =
-                                (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-                        mNotificationManager.notify(SCORE_NOTIFICATION_ID, mBuilder.build());
+                    mNotificationManager.notify(SCORE_NOTIFICATION_ID, mBuilder.build());
 
 
-                    }
                 }
+            }
 
-                cursor.close();
+            cursor.close();
 
-                makulUri = ScoreContract.MakulEntry.CONTENT_URI;
+            makulUri = ScoreContract.MakulEntry.CONTENT_URI;
 
-                ContentValues values = new ContentValues();
+            ContentValues values = new ContentValues();
 
-                values.put(ScoreContract.MakulEntry.COLUMN_COUNT_JUDUL, countJudul);
+            values.put(ScoreContract.MakulEntry.COLUMN_COUNT_JUDUL, countJudul);
 
-                String selection = ScoreContract.MakulEntry.TABLE_NAME +
-                        "." + ScoreContract.MakulEntry.COLUMN_ID_MAKUL + " = ?";
+            String selection = ScoreContract.MakulEntry.TABLE_NAME +
+                    "." + ScoreContract.MakulEntry.COLUMN_ID_MAKUL + " = ?";
 
-                context.getContentResolver().update(
-                        makulUri,
-                        values,
-                        selection,
-                        new String[]{makulId}
-                );
+            context.getContentResolver().update(
+                    makulUri,
+                    values,
+                    selection,
+                    new String[]{makulId}
+            );
 
-            //}
         }
     }
 }

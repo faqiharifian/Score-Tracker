@@ -107,10 +107,6 @@ public class ScoreContract {
             return CONTENT_URI.buildUpon().appendPath(makulId).build();
         }
 
-        public static String getMakulIdFromUri(Uri uri){
-            return uri.getPathSegments().get(1);
-        }
-
         public static String getIdMakul(Uri uri){
             return uri.getPathSegments().get(1);
         }

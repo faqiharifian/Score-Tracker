@@ -58,7 +58,6 @@ public class ScoreProvider extends ContentProvider {
     private static final String sMakul =
             ScoreContract.MakulEntry.TABLE_NAME;
 
-    //location.location_setting = ? AND date = ?
     private static final String sNilaiAndMakul =
             ScoreContract.NilaiEntry.TABLE_NAME +
                     "." + ScoreContract.NilaiEntry.COLUMN_ID_MAKUL + " = ?" + " AND " +
@@ -183,12 +182,6 @@ public class ScoreProvider extends ContentProvider {
         return true;
     }
 
-    /*
-        Students: Here is where you need to create the UriMatcher. This UriMatcher will
-        match each URI to the WEATHER, WEATHER_WITH_LOCATION, WEATHER_WITH_LOCATION_AND_DATE,
-        and LOCATION integer constants defined above.  You can test this by uncommenting the
-        testUriMatcher test within TestUriMatcher.
-     */
     static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = ScoreContract.CONTENT_AUTHORITY;
@@ -203,21 +196,14 @@ public class ScoreProvider extends ContentProvider {
         return matcher;
     }
 
-    /*
-        Students: We've coded this for you.  We just create a new WeatherDbHelper for later use
-        here.
-     */
+
     @Override
     public boolean onCreate() {
         mOpenHelper = new ScoreDbHelper(getContext());
         return true;
     }
 
-    /*
-        Students: Here's where you'll code the getType function that uses the UriMatcher.  You can
-        test this by uncommenting testGetType in TestProvider.
 
-     */
     @Override
     public String getType(Uri uri) {
 
@@ -225,9 +211,6 @@ public class ScoreProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
 
         switch (match) {
-            // Student: Uncomment and fill out these two cases
-//            case WEATHER_WITH_LOCATION_AND_DATE:
-//            case WEATHER_WITH_LOCATION:
             case MAKUL:
                 return ScoreContract.MakulEntry.CONTENT_TYPE;
             case NILAI_BY_MAKUL:
@@ -246,7 +229,6 @@ public class ScoreProvider extends ContentProvider {
         // and query the database accordingly.
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
-            // "weather/*/*"
             case MAKUL:
             {
                 retCursor = getMakul(uri, projection, sortOrder);
@@ -262,7 +244,6 @@ public class ScoreProvider extends ContentProvider {
                 retCursor = getMakulById(uri, projection, sortOrder);
                 break;
             }
-            // "weather/*"
             case NILAI_BY_MAKUL: {
                 retCursor = getNilaiByMakul(uri, projection, sortOrder);
                 break;
@@ -270,9 +251,6 @@ public class ScoreProvider extends ContentProvider {
             case NILAI_JUDUL: {
                 retCursor = getNilaiJudul(uri, projection, sortOrder);
                 break;
-            }
-            case NILAI:{
-                retCursor = null;
             }
 
             default:

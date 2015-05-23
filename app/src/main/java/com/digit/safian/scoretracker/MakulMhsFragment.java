@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,8 +21,6 @@ import android.widget.TextView;
 import com.digit.safian.scoretracker.data.ScoreContract;
 import com.digit.safian.scoretracker.sync.ScoreSyncAdapter;
 
-//import android.content.Loader;
-//import android.support.v4.content.Loader;
 
 public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final int MAKUL_LOADER = 0;
@@ -52,8 +49,6 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         // Add this line in order for this fragment to handle menu events
         setHasOptionsMenu(true);
 
-        //ScoreSyncAdapter.initializeSyncAdapter(getActivity());
-            //updateMakulMhs();
     }
 
 
@@ -85,21 +80,14 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onStart(){
-        Log.v("makul", "onstart");
         super.onStart();
 
-        //updateMakulMhs();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_mhs, container, false);
-
-        String sortOrder = ScoreContract.MakulEntry.COLUMN_ID_MAKUL + " ASC";
-        Uri makulUri = ScoreContract.MakulEntry.CONTENT_URI;
-
-        Cursor cur = getActivity().getContentResolver().query(makulUri, null, null, null, sortOrder);
 
         mMakulAdapter = new MakulAdapter(getActivity(), null, 0);
 
@@ -108,25 +96,17 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                long makul = view.getId();
                 TextView titleView = (TextView) view;
                 String title = titleView.getText().toString();
-                //long makul = mMakulAdapter.getItemId(position);
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
                     String makulId = cursor.getString(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_ID_MAKUL));
                     ((Callback) getActivity())
                             .onItemSelected(ScoreContract.NilaiEntry.buildNilaiJudulUri(makulId), title);
-                    //((Callback) getActivity()).onItemSelected();
                 }
 
                 mPosition = position;
-                /*Log.v("makul id clicked", String.valueOf(makul));
-                Intent intent = new Intent(getActivity(), NilaiMhsActivity.class)
-                        .putExtra("makulId", makul)
-                        .putExtra("title", title);*/
-                //Intent intent = new Intent(getActivity(), NilaiMhsActivity.class);
-                //startActivity(intent);
+
             }
         });
 

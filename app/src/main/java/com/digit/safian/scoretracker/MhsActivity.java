@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -21,7 +20,6 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v("Called","onCreate MhsActivity");
         super.onCreate(savedInstanceState);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSemester = prefs.getString(getString(R.string.pref_semester_key), "");
@@ -40,18 +38,8 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
             getSupportActionBar().setElevation(0f);
         }
 
-        MakulMhsFragment makulFragment = ((MakulMhsFragment)getSupportFragmentManager()
-            .findFragmentById(R.id.fragment_makul));
-
-            /*setContentView(R.layout.activity_mhs);
-            if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, new MakulMhsFragment())
-                        .commit();
-            }*/
-
         if(mSemester != ""){
-            ScoreSyncAdapter.initializeSyncAdapter(this);
+            //ScoreSyncAdapter.initializeSyncAdapter(this);
         }
 
     }
@@ -74,10 +62,7 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
         }else if(id == R.id.action_settings){
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
-        }/*else if(id == R.id.action_about){
-            startActivity(new Intent(getActivity(), AboutActivity.class));
-            return true;
-        }*/
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -94,7 +79,9 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
             }
             NilaiMhsFragment nilai = (NilaiMhsFragment)getSupportFragmentManager().findFragmentByTag(NILAIFRAGMENT_TAG);
             if(null != nilai){
-                //nilai.
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.nilai_mhs_container, new NilaiMhsFragment(), NILAIFRAGMENT_TAG)
+                        .commit();
             }
             mSemester = semester;
         }

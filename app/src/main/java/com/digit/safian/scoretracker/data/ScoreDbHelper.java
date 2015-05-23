@@ -77,7 +77,6 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
                 " UNIQUE (" + NilaiEntry.COLUMN_ID_MAKUL + ", " +
                 NilaiEntry.COLUMN_JUDUL + ", " +
                 NilaiEntry.COLUMN_MAHASISWA + ") ON CONFLICT REPLACE);";
-        Log.v("query", SQL_CREATE_NILAI_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_MAKUL_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_NILAI_TABLE);
     }

@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -43,7 +42,6 @@ public class splashscreen extends Activity {
                 // TODO Auto-generated method stub
                 Intent i = new Intent(splashscreen.this, MainActivity.class);
                 startActivity(i);
-                //jeda selesai Splashscreen
                 this.finish();
             }
             private void finish() {

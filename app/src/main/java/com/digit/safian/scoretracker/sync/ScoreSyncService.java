@@ -13,7 +13,6 @@ public class ScoreSyncService extends Service{
     private static ScoreSyncAdapter sScoreSyncAdapter = null;
     @Override
     public void onCreate() {
-        Log.d("ScoreSyncService", "onCreate - ScoreSyncService");
         synchronized (sSyncAdapterLock){
             if(sScoreSyncAdapter == null){
                 sScoreSyncAdapter = new ScoreSyncAdapter(getApplicationContext(), true);
