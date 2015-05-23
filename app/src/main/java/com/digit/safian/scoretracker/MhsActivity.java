@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,10 +21,12 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v("Called","onCreate MhsActivity");
         super.onCreate(savedInstanceState);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSemester = prefs.getString(getString(R.string.pref_semester_key), "");
 
+        setContentView(R.layout.activity_mhs);
         if(findViewById(R.id.nilai_mhs_container) != null){
             mTwoPane = true;
 
@@ -98,7 +101,7 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
     }
 
     @Override
-    public void onItemSelected(Uri contentUri){
+    public void onItemSelected(Uri contentUri, String title){
         if(mTwoPane){
             Bundle args = new Bundle();
             args.putParcelable(NilaiMhsFragment.NILAI_URI, contentUri);
@@ -111,7 +114,8 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
                     .commit();
         }else{
             Intent intent = new Intent(this, NilaiMhsActivity.class)
-                    .setData(contentUri);
+                    .setData(contentUri)
+                    .putExtra("title", title);
             startActivity(intent);
         }
     }

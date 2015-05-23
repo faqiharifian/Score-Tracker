@@ -12,52 +12,60 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="25dp"
-            android:paddingBottom="25dp">
+            android:layout_height="fill_parent"
+            android:layout_weight="4">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Thanks for Downloading"
-                android:id="@+id/textView"
-                android:textStyle="bold"
-                android:textAlignment="center"
-                android:singleLine="false"
-                android:textSize="12pt"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center" />
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent">
 
-            <ImageView
-                android:layout_width="119dp"
-                android:layout_height="119dp"
-                android:id="@+id/imageView"
-                android:layout_gravity="center"
-                android:src="@drawable/logo"
-                android:background="@drawable/logo" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Thanks for Downloading"
+                    android:id="@+id/textView"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:singleLine="false"
+                    android:textSize="12pt"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="80dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Score Tracker"
-                android:id="@+id/textView4"
-                android:textStyle="bold"
-                android:textAlignment="center"
-                android:singleLine="false"
-                android:textSize="12pt"
-                android:layout_below="@+id/textView"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center" />
+                <ImageView
+                    android:layout_width="119dp"
+                    android:layout_height="119dp"
+                    android:id="@+id/imageView"
+                    android:layout_gravity="center"
+                    android:src="@drawable/logo"
+                    android:background="@drawable/logo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Score Tracker"
+                    android:id="@+id/textView4"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:singleLine="false"
+                    android:textSize="12pt"
+                    android:layout_below="@+id/textView"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="80dp" />
+            </FrameLayout>
+
         </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="#96ffffff">
+            android:background="#96ffffff"
+            android:layout_weight="2">
 
             <TextView android:text="“Score Tracker” is used to monitor score from lecturer in Computer Science, Diponegoro University. Collegers can see their score posted by their lecturer with this application."
                 android:layout_width="wrap_content"

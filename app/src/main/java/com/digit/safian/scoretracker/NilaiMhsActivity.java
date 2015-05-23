@@ -11,8 +11,8 @@ public class NilaiMhsActivity extends ActionBarActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //long makulId = getIntent().getExtras().getLong("makulId");
-        /*String title = getIntent().getExtras().getString("title");
-        setTitle(title);*/
+        String title = getIntent().getExtras().getString("title");
+        setTitle(title);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nilai_mhs);
         //getActionBar().setDisplayHomeAsUpEnabled(true);

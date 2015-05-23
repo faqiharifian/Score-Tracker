@@ -4,6 +4,8 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.TaskStackBuilder;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
@@ -51,8 +53,8 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
 
     /*public static final int SYNC_INTERVAL = 60 * 60 * 6;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/6;*/
-    public static final int SYNC_INTERVAL = 60 * 30;
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
+    public static final int SYNC_INTERVAL = 60 * 60 * 12;
+    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/12;
     //private static final long DAY_IN_MILLIS = 1000 * 60;
     final int SCORE_NOTIFICATION_ID = 3153;
 
@@ -428,11 +430,6 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
 
         if(mNotif.equals("on")) {
 
-            String lastNotif = context.getString(R.string.pref_last_notify);
-            long lastSync = prefs.getLong(lastNotif, 0);
-            Log.v("notify", String.valueOf(lastSync));
-            Log.v("current", String.valueOf(System.currentTimeMillis()));
-            Log.v("diff", String.valueOf(System.currentTimeMillis() - lastSync));
 
             //if(System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS ) {
                 Log.v("inside", "if");
@@ -464,8 +461,11 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                                 makul);
                         Log.v("notify", contentText);
 
+                        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_notif);
+
                         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
                                 .setSmallIcon(R.drawable.ic_stat)
+                                .setLargeIcon(largeIcon)
                                 .setContentTitle(title)
                                 .setContentText(contentText);
 
@@ -485,9 +485,7 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
 
                         mNotificationManager.notify(SCORE_NOTIFICATION_ID, mBuilder.build());
 
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putLong(lastNotif, System.currentTimeMillis());
-                        editor.commit();
+
                     }
                 }
 

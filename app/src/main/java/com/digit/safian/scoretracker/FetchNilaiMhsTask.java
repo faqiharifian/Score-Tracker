@@ -187,7 +187,7 @@ public class FetchNilaiMhsTask extends AsyncTask<String, Void, String[]> {
 
     @Override
     protected void onPostExecute(String[] result) {
-        NilaiMhsFragment.setRefreshState(false);
+        //NilaiMhsFragment.setRefreshState(false);
 
     }
 }

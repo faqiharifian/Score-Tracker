@@ -59,20 +59,31 @@ public class NilaiAdapter extends ArrayAdapter<Map<String, String>> {
                 uasView.setText(getItem(i).getString(getItem(i).getColumnIndex(ScoreContract.NilaiEntry.COLUMN_NILAI)));
             }
         }*/
+
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        //int pixels = (int) (dps * scale + 0.5f);
+
         Map<String, String> item = getItem(position);
         Set<String> keys = item.keySet();
 
-        TextView nameView = (TextView) view.findViewById(R.id.nama);
-        nameView.setText(item.get("nama"));
+        //TextView nameView = (TextView) view.findViewById(R.id.nama);
+        TextView nameView = new TextView(getContext());
+        String name = formatName(item.get("nama"));
+        nameView.setText(name);
+        nameView.setGravity(Gravity.CENTER);
+
+        header.addView(nameView);
+        nameView.setWidth((int) (150*scale));
+        nameView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
         for(String key : keys){
             if(!key.equals("nama")){
                 TextView tv = new TextView(getContext());
                 tv.setText(item.get(key));
                 tv.setGravity(Gravity.CENTER);
+                tv.setWidth((int) (75*scale));
 
                 header.addView(tv);
-                tv.getLayoutParams().width = 50;
                 tv.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
             }
         }
@@ -99,12 +110,16 @@ public class NilaiAdapter extends ArrayAdapter<Map<String, String>> {
         c.save();*/
         return view;
     }
-    public Map<String, String> convertCursor(Cursor c){
-        Map<String, String> content = new HashMap<>();
-        content.put(ScoreContract.NilaiEntry.COLUMN_MAHASISWA, c.getString(c.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_MAHASISWA)));
-        content.put(c.getString(c.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_JUDUL)), c.getString(c.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_NILAI)));
-        header.add(c.getString(c.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_JUDUL)));
-        return content;
+    public String formatName(String fullName){
+        String[] arrayName = fullName.split(" ");
+        String formatedName = arrayName[0];
+        for(int i = 1; i<arrayName.length; i++){
+            String firstChar = arrayName[i].substring(0,1);
+            if(!firstChar.equals("(")){
+                formatedName += " " + firstChar + ".";
+            }
+        }
+        return formatedName;
     }
 
 

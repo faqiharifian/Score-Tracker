@@ -45,10 +45,13 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                 String semester = prefs.getString(getString(R.string.pref_semester_key), "");
+                Log.v("masuk", "klik");
                 if(semester.equals("")){
+                    Log.v("masuk klik", "Setting");
                     Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                     startActivity(intent);
                 }else{
+                    Log.v("masuk klik", "Mhs");
                     Intent intent = new Intent(MainActivity.this, MhsActivity.class);
                     startActivity(intent);
                 }
@@ -115,7 +118,7 @@ public class MainActivity extends Activity {
         if(!mSemester.equals(semester)){
             Log.v("onResume", "change");
             mSemester = semester;
-            ScoreSyncAdapter.initializeSyncAdapter(this);
+            //ScoreSyncAdapter.initializeSyncAdapter(this);
         }
         /*if(login == true){
             Intent intent = new Intent(MainActivity.this, MhsActivity.class);

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -64,7 +65,7 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         if(args != null){
             mUri = args.getParcelable(NILAI_URI);
         }
-        makulId = getActivity().getIntent().getExtras().getLong("makulId");
+        //makulId = getActivity().getIntent().getExtras().getLong("makulId");
         /*Bundle bundle = getArguments();
         if(bundle != null) {
             makulId = bundle.getLong("makulId");
@@ -76,14 +77,16 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         //Cursor cur = getActivity().getContentResolver().query(nilaiUri, null, null, null, sortOrder);
 
         //Uri nilaiUri = ScoreContract.NilaiEntry.buildNilaiJudulUri(String.valueOf(makulId));
-        c = getActivity().getContentResolver().query(
-                //nilaiUri,
-                mUri,
-                new String[]{ScoreContract.NilaiEntry.COLUMN_ID_MAKUL, ScoreContract.NilaiEntry.COLUMN_JUDUL},
-                null,
-                null,
-                ScoreContract.NilaiEntry._ID
-        );
+        if(null != mUri) {
+            c = getActivity().getContentResolver().query(
+                    //nilaiUri,
+                    mUri,
+                    new String[]{ScoreContract.NilaiEntry.COLUMN_ID_MAKUL, ScoreContract.NilaiEntry.COLUMN_JUDUL},
+                    null,
+                    null,
+                    ScoreContract.NilaiEntry._ID
+            );
+        }
 
         mNilaiAdapter = new NilaiAdapter(getActivity());
 
@@ -104,7 +107,6 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
     private void updateNilaiMhs(){
         //Log.v("update: ","called");
-        setRefreshState(true);
 
         Intent intent = new Intent(getActivity(), NilaiService.class);
         intent.putExtra(NilaiService.MAKUL_EXTRA, String.valueOf(makulId));
@@ -113,7 +115,6 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onStart(){
-        setRefreshState(true);
         super.onStart();
         //updateNilaiMhs();
     }
@@ -121,7 +122,6 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onResume(){
         super.onResume();
-        setRefreshState(false);
     }
 
     @Override
@@ -129,7 +129,6 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         optionsMenu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_nilai_mhs, menu);
-        setRefreshState(true);
         /*MenuItem menuItem = menu.findItem(R.id.action_share);
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
@@ -159,8 +158,17 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
 
     public void setHeader(Cursor c){
+        final float scale = getActivity().getResources().getDisplayMetrics().density;
+
         View view = getView();
         TableRow tableRow = (TableRow) view.findViewById(R.id.header);
+
+        TextView namaView = new TextView(getActivity());
+        namaView.setText("NAMA");
+        namaView.setGravity(Gravity.CENTER);
+        namaView.setWidth((int) (150*scale));
+        namaView.setTextColor(Color.WHITE);
+        tableRow.addView(namaView);
 
         c.moveToFirst();
         while(!c.isAfterLast()){
@@ -169,7 +177,8 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
             TextView textView = new TextView(getActivity());
             textView.setText(c.getString(c.getColumnIndex(ScoreContract.NilaiEntry.COLUMN_JUDUL)).toUpperCase());
             textView.setGravity(Gravity.CENTER);
-            textView.setWidth(50);
+            textView.setWidth((int) (75*scale));
+            textView.setTextColor(Color.WHITE);
             tableRow.addView(textView);
             c.moveToNext();
         }
@@ -182,7 +191,9 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         //Log.v("onActivityCreated", "called");
-        setHeader(c);
+        if(null != c) {
+            setHeader(c);
+        }
         getLoaderManager().initLoader(10, null, this);
         super.onActivityCreated(savedInstanceState);
     }
@@ -200,17 +211,19 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
             c.moveToNext();
             ++k;
         }*/
-        NilaiLoader nilaiLoader = new NilaiLoader(getActivity(), c);
-        //nilaiLoader.forceLoad();
-        return nilaiLoader;
-        //return null;
+        if(null != c) {
+            NilaiLoader nilaiLoader = new NilaiLoader(getActivity(), c);
+            //nilaiLoader.forceLoad();
+            return nilaiLoader;
+        }else {
+            return null;
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<List<Cursor>> cursorLoader, List<Cursor> cursor) {
         //Log.v("onLoadFinished ", "called");
         mNilaiAdapter.setData(cursor);
-        setRefreshState(false);
 
     }
 
@@ -220,18 +233,6 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         mNilaiAdapter.setData(null);
     }
 
-    public static void setRefreshState(final boolean refreshing){
-        if(optionsMenu != null){
-            final MenuItem refreshItem = optionsMenu.findItem(R.id.action_refresh);
-            if(refreshItem != null){
-                if(refreshing){
-                    refreshItem.setActionView(R.layout.actionbar_indeterminate_progress);
-                }else{
-                    refreshItem.setActionView(null);
-                }
-            }
-        }
-    }
 
     private Intent createShareNilaiIntent(){
 

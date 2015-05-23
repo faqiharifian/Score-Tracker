@@ -39,7 +39,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
     public interface Callback{
 
-        public void onItemSelected(Uri nilaiUri);
+        public void onItemSelected(Uri nilaiUri, String title);
     }
 
     public MakulMhsFragment() {
@@ -79,7 +79,6 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     void onSemesterChanged() {
-        setRefreshState(true);
         updateMakulMhs();
         getLoaderManager().restartLoader(MAKUL_LOADER, null, this);
     }
@@ -88,7 +87,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
     public void onStart(){
         Log.v("makul", "onstart");
         super.onStart();
-        setRefreshState(true);
+
         //updateMakulMhs();
     }
 
@@ -104,20 +103,20 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
         mMakulAdapter = new MakulAdapter(getActivity(), null, 0);
 
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_makul_mhs);
-        listView.setAdapter(mMakulAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        mListView = (ListView) rootView.findViewById(R.id.listview_makul_mhs);
+        mListView.setAdapter(mMakulAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l){
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 long makul = view.getId();
                 TextView titleView = (TextView) view;
                 String title = titleView.getText().toString();
                 //long makul = mMakulAdapter.getItemId(position);
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-                if(cursor != null){
+                if (cursor != null) {
                     String makulId = cursor.getString(cursor.getColumnIndex(ScoreContract.MakulEntry.COLUMN_ID_MAKUL));
                     ((Callback) getActivity())
-                            .onItemSelected(ScoreContract.NilaiEntry.buildNilaiJudulUri(makulId));
+                            .onItemSelected(ScoreContract.NilaiEntry.buildNilaiJudulUri(makulId), title);
                     //((Callback) getActivity()).onItemSelected();
                 }
 
@@ -139,6 +138,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
+        setRefreshState(true);
         getLoaderManager().initLoader(MAKUL_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }

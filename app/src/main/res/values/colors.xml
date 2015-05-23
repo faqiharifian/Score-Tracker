@@ -3,4 +3,11 @@
     <color name="black_overlay">#66000000</color>
     <color name="action_bar_custom">#ff2477ff</color>
 
+    <color name="score_white">#ffffff</color>
+    <color name="score_gray_70">#4d4d4d</color>
+    <color name="score_gray_40">#999999</color>
+    <color name="score_dark_blue">#0288D1</color>
+    <color name="score_light_blue">#ff64c2f4</color>
+    <color name="score_blue">#ff1ca8f4</color>
+
 </resources>

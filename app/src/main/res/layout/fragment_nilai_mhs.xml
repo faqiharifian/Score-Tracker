@@ -2,21 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.digit.safian.scoretracker.NilaiMhsActivity.NilaiMhsFragment"
-    android:id="@+id/tabel_nilai"
-    android:background="@drawable/activity_background">
+    android:id="@+id/tabel_nilai">
     <TableRow
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffc3c3c3">
-        <TextView
+        android:background="#4d4d4d"
+        android:padding="3dp">
+        <!--<TextView
             android:id="@+id/nama"
             android:text="NAMA"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="3dp"/>
+            android:gravity="center"/>-->
 
     </TableRow>
     <ListView
