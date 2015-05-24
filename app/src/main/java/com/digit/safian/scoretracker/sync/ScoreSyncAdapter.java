@@ -49,8 +49,8 @@ import java.util.Vector;
  */
 public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
 
-    public static final int SYNC_INTERVAL = 60;
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/12;
+    public static final long SYNC_INTERVAL = 60 * 60 * 12;
+    public static final long SYNC_FLEXTIME = SYNC_INTERVAL/12;
     final int SCORE_NOTIFICATION_ID = 3153;
     final String NOTIFICATION_GROUP = "score_notification_group";
 
@@ -239,7 +239,7 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
         return newAccount;
     }
 
-    public static void configurePeriodicSync(Context context, int syncInterval, int flexTime){
+    public static void configurePeriodicSync(Context context, long syncInterval, long flexTime){
         Account account = getSyncAccount(context);
         String authority = context.getString(R.string.content_authority);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
@@ -414,8 +414,8 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                             .setSmallIcon(R.drawable.ic_stat)
                             .setLargeIcon(largeIcon)
                             .setContentTitle(title)
-                            .setContentText(contentText)
-                            .setGroup(NOTIFICATION_GROUP);
+                            .setContentText(contentText);
+                            //.setGroup(NOTIFICATION_GROUP);
 
                     Intent resultIntent = new Intent(context, MainActivity.class);
 

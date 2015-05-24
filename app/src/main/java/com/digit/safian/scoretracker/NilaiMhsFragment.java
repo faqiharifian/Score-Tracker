@@ -101,12 +101,7 @@ public class NilaiMhsFragment extends Fragment implements LoaderManager.LoaderCa
         optionsMenu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_nilai_mhs, menu);
-        /*MenuItem menuItem = menu.findItem(R.id.action_share);
-        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
-        if(mPath != null){
-            mShareActionProvider.setShareIntent(createShareNilaiIntent());
-        }*/
     }
 
     @Override
