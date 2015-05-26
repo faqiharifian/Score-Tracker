@@ -5,9 +5,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- Permissions required by the sync adapter -->
@@ -36,21 +36,9 @@
 
         </activity>
         <activity
-            android:name=".DosenActivity"
-            android:label="@string/title_activity_dosen" >
-        </activity>
-        <activity
             android:name=".MhsActivity"
             android:label="@string/title_activity_mhs"
             android:theme="@style/ScoreTheme">
-
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
         </activity>
 
         <provider
@@ -79,10 +67,10 @@
         <activity
             android:name=".AboutActivity"
             android:label="@string/title_activity_about">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
-
-        <service android:name=".service.MakulService" />
-        <service android:name=".service.NilaiService" />
         <!-- SyncAdapter's dummy authentication service -->
         <service android:name=".sync.ScoreAuthenticatorService" >
             <intent-filter>
@@ -105,13 +93,6 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
-
-        <activity
-            android:name=".FullscreenActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_fullscreen"
-            android:theme="@style/FullscreenTheme" >
-        </activity>
     </application>
 
 </manifest>

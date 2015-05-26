@@ -1,11 +1,11 @@
 package com.digit.safian.scoretracker;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,6 +13,7 @@ import com.digit.safian.scoretracker.sync.ScoreSyncAdapter;
 
 
 public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.Callback{
+    private ProgressDialog progressDialog;
     private final String NILAIFRAGMENT_TAG = "NFTAG";
 
     private boolean mTwoPane;
@@ -20,9 +21,8 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mSemester = prefs.getString(getString(R.string.pref_semester_key), "");
+        super.onCreate(savedInstanceState);;
+        mSemester = Utility.getPreferredSemester(this);
 
         setContentView(R.layout.activity_mhs);
         if(findViewById(R.id.nilai_mhs_container) != null){
@@ -37,11 +37,12 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
             mTwoPane = false;
             getSupportActionBar().setElevation(0f);
         }
-
-        if(mSemester != ""){
-            //ScoreSyncAdapter.initializeSyncAdapter(this);
-        }
-
+        Log.v("onCreateView", "instant progress");
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("retrieving...");
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
     }
 
     @Override
@@ -69,8 +70,7 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
     @Override
     protected void onResume(){
         super.onResume();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String semester = prefs.getString(getString(R.string.pref_semester_key), "");
+        String semester = Utility.getPreferredSemester(this);
 
         if(semester != null && !semester.equals(mSemester)){
             MakulMhsFragment makul = (MakulMhsFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_makul);

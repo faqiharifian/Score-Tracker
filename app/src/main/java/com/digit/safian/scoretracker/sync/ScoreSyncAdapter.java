@@ -25,6 +25,7 @@ import android.support.v4.app.TaskStackBuilder;
 
 import com.digit.safian.scoretracker.MainActivity;
 import com.digit.safian.scoretracker.R;
+import com.digit.safian.scoretracker.Utility;
 import com.digit.safian.scoretracker.data.ScoreContract;
 
 import org.json.JSONArray;
@@ -61,8 +62,7 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String prefSemester = prefs.getString(getContext().getString(R.string.pref_semester_key), "");
+        String prefSemester = Utility.getPreferredSemester(getContext());
 
         int semesterInt = Integer.parseInt(prefSemester);
         List<String> arraySemester = new ArrayList<>();
@@ -151,9 +151,7 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                 String nilaiJsonStr = null;
 
                 try {
-                    // Construct the URL for the OpenWeatherMap query
-                    // Possible parameters are avaiable at OWM's forecast API page, at
-                    // http://openweathermap.org/API#forecast
+                    // Construct the URL for google sheet
                     URL url = new URL("https://spreadsheets.google.com/feeds/list/1-wtjHhLl39syH6dDTFzDX-glDGaA3izzI_JBLa0nddQ/"+makulId+"/public/values?alt=json");
 
                     // Create the request to OpenWeatherMap, and open the connection
@@ -203,7 +201,6 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                     if(nilaiJsonStr != null) {
                         getNilaiDataFromJson(nilaiJsonStr, makulId);
                     }
-                    //return getMakulDataFromJson(nilaiJsonStr);
                 }catch(JSONException e){
                     e.printStackTrace();
                 }
@@ -381,7 +378,7 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
         Context context = getContext();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String mNotif = prefs.getString(context.getString(R.string.pref_notif_key), "");
+        String mNotif = prefs.getString(context.getString(R.string.pref_notif_key), context.getString(R.string.pref_notif_key_on));
 
 
 

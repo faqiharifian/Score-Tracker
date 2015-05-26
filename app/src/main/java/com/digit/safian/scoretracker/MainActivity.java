@@ -2,9 +2,7 @@ package com.digit.safian.scoretracker;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 
@@ -18,22 +16,18 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mSemester = prefs.getString(getString(R.string.pref_semester_key), "");
+        mSemester = Utility.getPreferredSemester(this);
 
-        final Button masuk = (Button) findViewById(R.id.masuk);
-        masuk.setOnClickListener(new View.OnClickListener() {
+
+
+
+        final Button start = (Button) findViewById(R.id.masuk);
+        start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                String semester = prefs.getString(getString(R.string.pref_semester_key), "");
-                if(semester.equals("")){
-                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                    startActivity(intent);
-                }else{
-                    Intent intent = new Intent(MainActivity.this, MhsActivity.class);
-                    startActivity(intent);
-                }
+
+                Intent intent = new Intent(MainActivity.this, MhsActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -60,8 +54,7 @@ public class MainActivity extends Activity {
     @Override
     public void onResume(){
         super.onResume();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String semester = prefs.getString(getString(R.string.pref_semester_key), "");
+        String semester = Utility.getPreferredSemester(this);
 
         if(!mSemester.equals(semester)){
             ScoreSyncAdapter.syncImmediately(this);

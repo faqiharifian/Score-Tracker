@@ -6,6 +6,7 @@
     <ListPreference
         android:title="@string/pref_semester_label"
         android:key="@string/pref_semester_key"
+        android:defaultValue="@string/pref_semester_default_ganjil"
         android:entryValues="@array/pref_semester_ganjil"
         android:entries="@array/pref_semester_ganjil"/>
     <ListPreference

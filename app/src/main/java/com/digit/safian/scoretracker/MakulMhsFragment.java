@@ -1,10 +1,9 @@
 package com.digit.safian.scoretracker;
 
-import android.content.SharedPreferences;
+import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -23,6 +22,7 @@ import com.digit.safian.scoretracker.sync.ScoreSyncAdapter;
 
 
 public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+
     private static final int MAKUL_LOADER = 0;
     private MakulAdapter mMakulAdapter;
 
@@ -89,6 +89,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_mhs, container, false);
 
+
         mMakulAdapter = new MakulAdapter(getActivity(), null, 0);
 
         mListView = (ListView) rootView.findViewById(R.id.listview_makul_mhs);
@@ -134,8 +135,7 @@ public class MakulMhsFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String semester = prefs.getString(getActivity().getString(R.string.pref_semester_key), "");
+        String semester = Utility.getPreferredSemester(getActivity());
         Uri makulUri = ScoreContract.MakulEntry.buildMakulWithSemesterUri(semester);
         return new CursorLoader(
                 getActivity(),

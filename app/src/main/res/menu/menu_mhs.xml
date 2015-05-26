@@ -19,33 +19,4 @@
         app:showAsAction="always">
     </item>
 
-    <!--<item
-        android:id="@+id/menu_overflow"
-        android:title=""
-        android:icon="@drawable/ic_action_overflow"
-        android:orderInCategory="100"
-        app:showAsAction="always"
-        >
-        <menu
-            android:background="#ff000000">
-            <item
-                android:id="@+id/action_settings"
-                android:title="@string/action_settings"
-                android:icon="@drawable/ic_action_setting"
-                android:orderInCategory="99"
-                android:textColor="#00ffffff"
-                app:showAsAction="never">
-            </item>
-            <item
-                android:id="@+id/action_about"
-                android:title="@string/action_about"
-                android:icon="@drawable/ic_action_about"
-                android:orderInCategory="100"
-                android:textColor="#00ffffff"
-                app:showAsAction="never">
-            </item>
-        </menu>
-    </item>-->
-
-
 </menu>
