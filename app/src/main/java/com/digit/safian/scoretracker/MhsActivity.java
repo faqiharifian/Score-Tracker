@@ -1,7 +1,10 @@
 package com.digit.safian.scoretracker;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -18,9 +21,17 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
     private boolean mTwoPane;
     private String mSemester;
 
+    SyncReceiver myReceiver;
+    IntentFilter ACTION;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myReceiver = new SyncReceiver();
+        ACTION = new IntentFilter();
+        ACTION.addAction(getString(R.string.content_authority));
+        registerReceiver(myReceiver, ACTION);
+
         mSemester = Utility.getPreferredSemester(this);
 
         setContentView(R.layout.activity_mhs);
@@ -36,8 +47,21 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
             mTwoPane = false;
             getSupportActionBar().setElevation(0f);
         }
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.retrieve));
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
     }
 
+    @Override
+    public void onDestroy(){
+
+        super.onPause();
+        unregisterReceiver(myReceiver);
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_mhs,menu);
@@ -104,5 +128,20 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
     private void updateMakulMhs(){
         ScoreSyncAdapter.syncImmediately(this);
 
+    }
+
+    public class SyncReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                if(extras.get(ScoreSyncAdapter.SYNC_STATUS).equals("running")){
+                    progressDialog.show();
+                }else{
+                    progressDialog.hide();
+                }
+            }
+        }
     }
 }

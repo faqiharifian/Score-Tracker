@@ -39,5 +39,6 @@
     <string name="about_desc">Score Tracker” is used to monitor score from lecturer in Computer Science, Diponegoro University. Collegers can see their score posted by their lecturer with this application.</string>
     <string name="want_make">Want to make your own version? Please contact us:</string>
     <string name="my_email">faqiharifianaji@gmail.com</string>
+    <string name="retrieve">Retrieving data&#8230;</string>
 
 </resources>

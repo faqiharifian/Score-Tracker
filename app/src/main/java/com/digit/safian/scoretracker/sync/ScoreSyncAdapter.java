@@ -52,8 +52,12 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
 
     public static final long SYNC_INTERVAL = 60 * 60 * 12;
     public static final long SYNC_FLEXTIME = SYNC_INTERVAL/12;
+    public static final String SYNC_STATUS = "status";
+    public String status;
     final int SCORE_NOTIFICATION_ID = 3153;
     final String NOTIFICATION_GROUP = "score_notification_group";
+
+    Intent isSync;
 
     public ScoreSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
@@ -61,6 +65,11 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+        status = "running";
+        isSync = new Intent();
+        isSync.setAction(getContext().getString(R.string.content_authority));
+        isSync.putExtra(SYNC_STATUS, status);
+        getContext().sendBroadcast(isSync);
 
         String prefSemester = Utility.getPreferredSemester(getContext());
 
@@ -113,7 +122,6 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
                     return;
                 }
                 makulJsonStr = buffer.toString();
-                //Log.v(LOG_TAG, makulJsonStr);
 
             } catch (IOException e) {
                 // If the code didn't successfully get the weather data, there's no point in attemping
@@ -208,7 +216,9 @@ public class ScoreSyncAdapter extends AbstractThreadedSyncAdapter{
 
             }
         }
-
+        status = "finished";
+        isSync.putExtra(SYNC_STATUS, status);
+        getContext().sendBroadcast(isSync);
         return;
 
     }
