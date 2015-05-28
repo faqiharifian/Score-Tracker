@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -37,12 +36,6 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
             mTwoPane = false;
             getSupportActionBar().setElevation(0f);
         }
-        Log.v("onCreateView", "instant progress");
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("retrieving...");
-        progressDialog.setIndeterminate(false);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
     }
 
     @Override
