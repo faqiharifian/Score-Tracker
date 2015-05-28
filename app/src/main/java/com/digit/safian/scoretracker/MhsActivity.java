@@ -21,7 +21,7 @@ public class MhsActivity extends ActionBarActivity implements MakulMhsFragment.C
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);;
+        super.onCreate(savedInstanceState);
         mSemester = Utility.getPreferredSemester(this);
 
         setContentView(R.layout.activity_mhs);
